@@ -12,7 +12,7 @@ describe("marketplace filters", () => {
   });
   it("sorts by price ascending", () => {
     const r = filterProducts(PRODUCTS, { ...defaultFilters, sort: "price-asc" }, text);
-    expect(r[0].price).toBe(Math.min(...PRODUCTS.map((p) => p.price)));
+    expect(r[0]?.price).toBe(Math.min(...PRODUCTS.map((p) => p.price)));
   });
   it("requires all selected attributes", () => {
     const r = filterProducts(PRODUCTS, { ...defaultFilters, attributes: ["reusable", "compostable"] }, text);

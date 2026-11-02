@@ -12,7 +12,7 @@ import { cn } from "@/lib/utils";
 type Role = "buyer" | "supplier";
 
 export const Route = createFileRoute("/signup")({
-  validateSearch: (s: Record<string, unknown>): { role?: Role } => ({ role: s.role === "supplier" ? "supplier" : s.role === "buyer" ? "buyer" : undefined }),
+  validateSearch: (s: Record<string, unknown>): { role?: Role | undefined } => ({ role: s["role"] === "supplier" ? "supplier" : s["role"] === "buyer" ? "buyer" : undefined }),
   head: () => ({
     meta: [
       { title: "Create an account — GreenSwitch" },

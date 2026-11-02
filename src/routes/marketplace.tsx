@@ -46,7 +46,7 @@ function Marketplace() {
         {MATERIALS.map((m) => <Check key={m.id} id={`mat-${m.id}`} label={m[lang]} checked={f.materials.includes(m.id)} onChange={() => toggle("materials", m.id)} />)}
       </FilterGroup>
       <FilterGroup title={`${t.market.price}: ₪${f.maxPrice}`}>
-        <Slider aria-label={t.market.price} min={1} max={50} step={1} value={[f.maxPrice]} onValueChange={([v]) => setF((s) => ({ ...s, maxPrice: v }))} />
+        <Slider aria-label={t.market.price} min={1} max={50} step={1} value={[f.maxPrice]} onValueChange={([v]) => setF((s) => ({ ...s, maxPrice: v ?? s.maxPrice }))} />
       </FilterGroup>
       <FilterGroup title={t.market.supplier}>
         <Select value={f.supplier} onValueChange={(v) => setF((s) => ({ ...s, supplier: v }))}>
