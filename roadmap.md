@@ -31,4 +31,5 @@
 - [x] Persistent public catalogue integration and safe development demo setup
 - [x] Signed-in account, catalogue and authorization checks; 10 regression tests passed
 - [ ] Verify confirmation-email delivery and emailed password recovery — requires a real recipient and email link
-- [ ] Bootstrap the first administrator — requires the owner to identify a registered account
+- [x] Bootstrap the first administrator — owner account designated; signed-in admin interface verification still pending
+- [x] Pending-supplier draft product management fixed (interface gate and database safeguard) and verified in the hosted preview; publication still requires approval
