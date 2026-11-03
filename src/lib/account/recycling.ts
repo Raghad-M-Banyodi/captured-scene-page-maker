@@ -26,5 +26,5 @@ export const defaultRewards=[{points:100,percent:5},{points:250,percent:10},{poi
 export const defaultWinners=[20,15,10];
 export const verifiedPoints=(weights:unknown,rate=10)=>Object.values(weightsSchema.parse(weights)).reduce((s,n)=>s.plus(n),new Decimal(0)).times(rate).toNumber();
 export const palestineMonth=(date:Date)=>new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Gaza',year:'numeric',month:'2-digit'}).format(date);
-export const boardSchema=z.object({period:z.string(),rankings:z.array(z.object({name:z.string(),kg:z.number(),rank:z.number()})),history:z.array(z.object({period:z.string(),winners:z.array(z.object({name:z.string(),kg:z.number(),rank:z.number()}))}))});
+export const boardSchema=z.object({period:z.string(),rewardPercents:z.array(z.number()).default([20,15,10]),rankings:z.array(z.object({name:z.string(),kg:z.number(),rank:z.number()})),history:z.array(z.object({period:z.string(),winners:z.array(z.object({name:z.string(),kg:z.number(),rank:z.number()}))}))});
 export type Board=z.infer<typeof boardSchema>;
