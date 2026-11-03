@@ -1,9 +1,10 @@
 # GreenSwitch account phase
-- [ ] Supplier product pricing, composition, image/document uploads and non-plastic review
-- [ ] Persistent cart totals and supplier-specific secure purchase requests
-- [ ] Buyer order tracking and supplier fulfillment status updates
-- [ ] Fictional competition fixtures without certificate claims
-- [ ] End-to-end ordering and security regression verification
+- [x] Supplier product pricing, composition, image/document uploads and non-plastic review implemented
+- [x] Persistent cart totals and supplier-specific secure purchase requests implemented
+- [x] Buyer order tracking and supplier fulfillment status updates implemented
+- [x] Fictional competition fixtures without certificate claims; isolated development seed only
+- [x] 17 regression tests; public pages checked without runtime errors
+- [ ] Signed-in end-to-end ordering, upload and database ownership checks — test-account access was declined
 - [x] Relational storage, ownership policies, role security, private documents
 - [x] Email registration, login, logout, recovery pages and protected dashboards
 - [x] Buyer accounts, saved products and carts; supplier products, inventory and verification; admin reviews
