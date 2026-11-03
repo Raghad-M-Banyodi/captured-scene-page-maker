@@ -1,0 +1,6 @@
+import {createFileRoute,Link} from '@tanstack/react-router';
+import {Recycling} from '@/components/account/Recycling';
+import {useI18n} from '@/lib/i18n';
+import {Button} from '@/components/ui/button';
+export const Route=createFileRoute('/recycling')({head:()=>({meta:[{title:'Recycling & Green Rewards — GreenSwitch'},{name:'description',content:'Request eligible paper, cardboard and aluminum pickups and manage verified Green Points and monthly rewards.'},{property:'og:title',content:'Recycling & Green Rewards — GreenSwitch'},{property:'og:description',content:'Verified recycling collections, private pickup tracking and Green Rewards in Palestine.'},{property:'og:type',content:'website'},{name:'twitter:card',content:'summary_large_image'}]}),component:RecyclingPage});
+function RecyclingPage(){const {t}=useI18n(),s=t.account.recycling;return <div className="container-page py-10 space-y-8"><div className="flex flex-wrap justify-between gap-4"><div><p className="eyebrow">GreenSwitch</p><h1 className="text-3xl text-forest mt-3">{s.title}</h1><p className="mt-3 text-muted-foreground">{s.subtitle}</p></div><Button asChild variant="outline"><Link to="/dashboard/recycling">{s.partnerTitle}</Link></Button></div><Recycling/></div>;}
