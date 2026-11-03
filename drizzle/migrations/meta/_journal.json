@@ -64,6 +64,13 @@
       "when": 1793707189395,
       "tag": "0008_group_campaign_private_read",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1793707337845,
+      "tag": "0009_fix_group_expiry_alias",
+      "breakpoints": true
     }
   ]
 }
