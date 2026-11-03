@@ -1,5 +1,13 @@
 {
   "version": "7",
   "dialect": "postgresql",
-  "entries": []
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1793704946771,
+      "tag": "0000_greenswitch_accounts_catalogue",
+      "breakpoints": true
+    }
+  ]
 }
