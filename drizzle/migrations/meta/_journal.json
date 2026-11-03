@@ -50,6 +50,13 @@
       "when": 1793707133016,
       "tag": "0006_group_buying_structure",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1793707159316,
+      "tag": "0007_group_buying_transactions",
+      "breakpoints": true
     }
   ]
 }

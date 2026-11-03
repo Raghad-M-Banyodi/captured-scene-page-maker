@@ -889,6 +889,8 @@ export type Database = {
         Args: { next_status: string; order_id: string }
         Returns: undefined
       }
+      create_group_campaign: { Args: { payload: Json }; Returns: string }
+      expire_group_campaigns: { Args: never; Returns: undefined }
       group_buyer_eligible: { Args: never; Returns: boolean }
       has_role: {
         Args: {
@@ -897,12 +899,24 @@ export type Database = {
         }
         Returns: boolean
       }
+      join_group_campaign: {
+        Args: { address: Json; cid: string; qty: number }
+        Returns: string
+      }
+      manage_group_campaign: {
+        Args: { action: string; cid: string }
+        Returns: string
+      }
       market_unit_price: {
         Args: { base: number; qty: number; tiers: Json }
         Returns: number
       }
       owns_supplier: { Args: { sid: string }; Returns: boolean }
       public_product: { Args: { pid: string }; Returns: boolean }
+      release_group_campaign: {
+        Args: { cid: string; final_state: string }
+        Returns: undefined
+      }
       request_cart_order: {
         Args: { address: Json; request_id: string }
         Returns: string[]
