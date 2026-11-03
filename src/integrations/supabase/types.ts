@@ -742,6 +742,10 @@ export type Database = {
         }
         Returns: undefined
       }
+      admin_verify_supplier: {
+        Args: { decision: string; supplier: string }
+        Returns: undefined
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
