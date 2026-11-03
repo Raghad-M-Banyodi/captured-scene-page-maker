@@ -1,0 +1,1 @@
+DO $repair$ DECLARE definition text; BEGIN SELECT pg_get_functiondef('public.recycling_action(text,jsonb)'::regprocedure) INTO definition; IF position('m.period=period' IN definition)=0 THEN RAISE EXCEPTION 'Expected monthly comparison not found'; END IF; definition:=replace(definition,'m.period=period','m.period=(payload->>''period'')::date'); EXECUTE definition; END $repair$;

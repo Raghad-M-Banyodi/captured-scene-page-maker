@@ -19,7 +19,7 @@ export function useNavItems() {
     { to: "/how-it-works", label: t.nav.how },
     { to: "/group-buying", label: t.nav.group },
     { to: "/impact", label: t.nav.impact },
-    { to: "/about", label: t.nav.about },
+    { to: "/recycling", label: t.account.recycling.rewards },
   ] as const;
 }
 

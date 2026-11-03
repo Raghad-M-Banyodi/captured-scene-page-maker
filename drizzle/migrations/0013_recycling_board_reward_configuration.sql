@@ -1,0 +1,1 @@
+DO $repair$ DECLARE definition text; BEGIN SELECT pg_get_functiondef('public.recycling_public_board()'::regprocedure) INTO definition; definition:=replace(definition,'''history'',history)', '''history'',history,''rewardPercents'',coalesce((SELECT to_jsonb(winner_percents) FROM public.recycling_settings WHERE id),''[20,15,10]''::jsonb))'); EXECUTE definition; END $repair$;

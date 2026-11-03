@@ -26,6 +26,7 @@ import { Route as MarketplaceRouteImport } from './routes/marketplace'
 import { Route as OrdersRouteImport } from './routes/orders'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as RecommendationsRouteImport } from './routes/recommendations'
+import { Route as RecyclingRouteImport } from './routes/recycling'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as SuppliersRouteImport } from './routes/suppliers'
@@ -34,6 +35,7 @@ import { Route as GroupBuyingCampaignIdRouteImport } from './routes/group-buying
 import { Route as ProductsProductIdRouteImport } from './routes/products.$productId'
 import { Route as AuthenticatedDashboardAdminRouteImport } from './routes/_authenticated/dashboard.admin'
 import { Route as AuthenticatedDashboardBuyerRouteImport } from './routes/_authenticated/dashboard.buyer'
+import { Route as AuthenticatedDashboardRecyclingRouteImport } from './routes/_authenticated/dashboard.recycling'
 import { Route as AuthenticatedDashboardSupplierRouteImport } from './routes/_authenticated/dashboard.supplier'
 
 const IndexRoute = IndexRouteImport.update({
@@ -120,6 +122,11 @@ const RecommendationsRoute = RecommendationsRouteImport.update({
   path: '/recommendations',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RecyclingRoute = RecyclingRouteImport.update({
+  id: '/recycling',
+  path: '/recycling',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
   path: '/reset-password',
@@ -162,6 +169,12 @@ const AuthenticatedDashboardBuyerRoute =
     path: '/dashboard/buyer',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedDashboardRecyclingRoute =
+  AuthenticatedDashboardRecyclingRouteImport.update({
+    id: '/dashboard/recycling',
+    path: '/dashboard/recycling',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedDashboardSupplierRoute =
   AuthenticatedDashboardSupplierRouteImport.update({
     id: '/dashboard/supplier',
@@ -186,6 +199,7 @@ export interface FileRoutesByFullPath {
   '/orders': typeof OrdersRoute
   '/privacy': typeof PrivacyRoute
   '/recommendations': typeof RecommendationsRoute
+  '/recycling': typeof RecyclingRoute
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
   '/suppliers': typeof SuppliersRoute
@@ -194,6 +208,7 @@ export interface FileRoutesByFullPath {
   '/products/$productId': typeof ProductsProductIdRoute
   '/dashboard/admin': typeof AuthenticatedDashboardAdminRoute
   '/dashboard/buyer': typeof AuthenticatedDashboardBuyerRoute
+  '/dashboard/recycling': typeof AuthenticatedDashboardRecyclingRoute
   '/dashboard/supplier': typeof AuthenticatedDashboardSupplierRoute
 }
 export interface FileRoutesByTo {
@@ -213,6 +228,7 @@ export interface FileRoutesByTo {
   '/orders': typeof OrdersRoute
   '/privacy': typeof PrivacyRoute
   '/recommendations': typeof RecommendationsRoute
+  '/recycling': typeof RecyclingRoute
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
   '/suppliers': typeof SuppliersRoute
@@ -221,6 +237,7 @@ export interface FileRoutesByTo {
   '/products/$productId': typeof ProductsProductIdRoute
   '/dashboard/admin': typeof AuthenticatedDashboardAdminRoute
   '/dashboard/buyer': typeof AuthenticatedDashboardBuyerRoute
+  '/dashboard/recycling': typeof AuthenticatedDashboardRecyclingRoute
   '/dashboard/supplier': typeof AuthenticatedDashboardSupplierRoute
 }
 export interface FileRoutesById {
@@ -242,6 +259,7 @@ export interface FileRoutesById {
   '/orders': typeof OrdersRoute
   '/privacy': typeof PrivacyRoute
   '/recommendations': typeof RecommendationsRoute
+  '/recycling': typeof RecyclingRoute
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
   '/suppliers': typeof SuppliersRoute
@@ -250,6 +268,7 @@ export interface FileRoutesById {
   '/products/$productId': typeof ProductsProductIdRoute
   '/_authenticated/dashboard/admin': typeof AuthenticatedDashboardAdminRoute
   '/_authenticated/dashboard/buyer': typeof AuthenticatedDashboardBuyerRoute
+  '/_authenticated/dashboard/recycling': typeof AuthenticatedDashboardRecyclingRoute
   '/_authenticated/dashboard/supplier': typeof AuthenticatedDashboardSupplierRoute
 }
 export interface FileRouteTypes {
@@ -271,6 +290,7 @@ export interface FileRouteTypes {
     | '/orders'
     | '/privacy'
     | '/recommendations'
+    | '/recycling'
     | '/reset-password'
     | '/signup'
     | '/suppliers'
@@ -279,6 +299,7 @@ export interface FileRouteTypes {
     | '/products/$productId'
     | '/dashboard/admin'
     | '/dashboard/buyer'
+    | '/dashboard/recycling'
     | '/dashboard/supplier'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -298,6 +319,7 @@ export interface FileRouteTypes {
     | '/orders'
     | '/privacy'
     | '/recommendations'
+    | '/recycling'
     | '/reset-password'
     | '/signup'
     | '/suppliers'
@@ -306,6 +328,7 @@ export interface FileRouteTypes {
     | '/products/$productId'
     | '/dashboard/admin'
     | '/dashboard/buyer'
+    | '/dashboard/recycling'
     | '/dashboard/supplier'
   id:
     | '__root__'
@@ -326,6 +349,7 @@ export interface FileRouteTypes {
     | '/orders'
     | '/privacy'
     | '/recommendations'
+    | '/recycling'
     | '/reset-password'
     | '/signup'
     | '/suppliers'
@@ -334,6 +358,7 @@ export interface FileRouteTypes {
     | '/products/$productId'
     | '/_authenticated/dashboard/admin'
     | '/_authenticated/dashboard/buyer'
+    | '/_authenticated/dashboard/recycling'
     | '/_authenticated/dashboard/supplier'
   fileRoutesById: FileRoutesById
 }
@@ -355,6 +380,7 @@ export interface RootRouteChildren {
   OrdersRoute: typeof OrdersRoute
   PrivacyRoute: typeof PrivacyRoute
   RecommendationsRoute: typeof RecommendationsRoute
+  RecyclingRoute: typeof RecyclingRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   SignupRoute: typeof SignupRoute
   SuppliersRoute: typeof SuppliersRoute
@@ -484,6 +510,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RecommendationsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/recycling': {
+      id: '/recycling'
+      path: '/recycling'
+      fullPath: '/recycling'
+      preLoaderRoute: typeof RecyclingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/reset-password': {
       id: '/reset-password'
       path: '/reset-password'
@@ -540,6 +573,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardBuyerRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/dashboard/recycling': {
+      id: '/_authenticated/dashboard/recycling'
+      path: '/dashboard/recycling'
+      fullPath: '/dashboard/recycling'
+      preLoaderRoute: typeof AuthenticatedDashboardRecyclingRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/dashboard/supplier': {
       id: '/_authenticated/dashboard/supplier'
       path: '/dashboard/supplier'
@@ -553,12 +593,14 @@ declare module '@tanstack/react-router' {
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedDashboardAdminRoute: typeof AuthenticatedDashboardAdminRoute
   AuthenticatedDashboardBuyerRoute: typeof AuthenticatedDashboardBuyerRoute
+  AuthenticatedDashboardRecyclingRoute: typeof AuthenticatedDashboardRecyclingRoute
   AuthenticatedDashboardSupplierRoute: typeof AuthenticatedDashboardSupplierRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDashboardAdminRoute: AuthenticatedDashboardAdminRoute,
   AuthenticatedDashboardBuyerRoute: AuthenticatedDashboardBuyerRoute,
+  AuthenticatedDashboardRecyclingRoute: AuthenticatedDashboardRecyclingRoute,
   AuthenticatedDashboardSupplierRoute: AuthenticatedDashboardSupplierRoute,
 }
 
@@ -583,6 +625,7 @@ const rootRouteChildren: RootRouteChildren = {
   OrdersRoute: OrdersRoute,
   PrivacyRoute: PrivacyRoute,
   RecommendationsRoute: RecommendationsRoute,
+  RecyclingRoute: RecyclingRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   SignupRoute: SignupRoute,
   SuppliersRoute: SuppliersRoute,

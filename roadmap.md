@@ -1,4 +1,9 @@
 # GreenSwitch account phase
+- [x] Recycling pickup workflow, approved business/partner access and private evidence
+- [x] Verified points ledger, configurable vouchers and supplier-approved discounts
+- [x] Palestine monthly podium, opt-out, historical winners and admin finalization
+- [x] Full isolated authenticated recycling-to-voucher database flow, concurrent redemption, monthly rewards and 40 regression tests; bilingual public browser checks
+- [ ] Hosted signed-in recycling/upload/reward readback — requires registered approved business, approved partner and independent administrator (zero users currently)
 - [x] Supplier campaigns, buyer commitments, progress/detail pages and history implemented
 - [x] Atomic target conversion, stock reservations, expiry and order integration implemented
 - [x] Five-buyer database simulation, concurrent maximums, duplicates, cancellation, expiry and completion verified; 30 regression tests
