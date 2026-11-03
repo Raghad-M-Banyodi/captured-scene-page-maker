@@ -903,6 +903,7 @@ export type Database = {
         Args: { address: Json; cid: string; qty: number }
         Returns: string
       }
+      joined_group_campaign: { Args: { cid: string }; Returns: boolean }
       manage_group_campaign: {
         Args: { action: string; cid: string }
         Returns: string
