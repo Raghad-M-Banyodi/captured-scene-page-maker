@@ -15,6 +15,13 @@
       "when": 1793705343524,
       "tag": "0001_tighten_account_authorization",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1793705754994,
+      "tag": "0002_marketplace_purchase_requests",
+      "breakpoints": true
     }
   ]
 }
