@@ -1,0 +1,6 @@
+import {z} from 'zod';
+import Decimal from 'decimal.js';
+export const campaignSchema=z.object({productId:z.string().uuid(),title:z.string().trim().min(1).max(150),groupPrice:z.coerce.number().positive().max(999999).multipleOf(0.01),target:z.coerce.number().int().positive().max(1000000),maximum:z.coerce.number().int().positive().max(1000000),startsAt:z.string().datetime(),deadline:z.string().datetime(),state:z.enum(['draft','active'])}).refine(v=>v.maximum>=v.target,{message:'Maximum must cover target'}).refine(v=>Date.parse(v.deadline)>Date.parse(v.startsAt),{message:'Deadline must follow start'});
+export function groupProgress(committed:number,target:number,maximum:number){return {percent:Math.min(100,Math.max(0,committed/target*100)),remaining:Math.max(0,target-committed),capacity:Math.max(0,maximum-committed),reached:committed>=target};}
+export function commitmentAllowed(qty:number,committed:number,maximum:number,stock:number){return Number.isInteger(qty)&&qty>0&&qty<=1000000&&qty<=stock&&committed+qty<=maximum;}
+export function commitmentSavings(normal:number,group:number,qty:number){return new Decimal(normal).minus(group).times(qty).toNumber();}

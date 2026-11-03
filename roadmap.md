@@ -1,4 +1,8 @@
 # GreenSwitch account phase
+- [x] Supplier campaigns, buyer commitments, progress/detail pages and history implemented
+- [x] Atomic target conversion, stock reservations, expiry and order integration implemented
+- [x] Five-buyer database simulation, concurrent maximums, duplicates, cancellation, expiry and completion verified; 30 regression tests
+- [ ] Signed-in campaign creation/join/readback in hosted app — requires registered confirmed buyers and an approved supplier/product
 - [x] Real-product advisor wizard with allowlisted AI ranking, deterministic fallback and private history implemented
 - [x] Exact cost calculator, price tiers, charts and private calculation history implemented
 - [x] Weight-based impact estimates, delivered-order distinction and trends implemented

@@ -30,6 +30,7 @@ import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as SuppliersRouteImport } from './routes/suppliers'
 import { Route as TermsRouteImport } from './routes/terms'
+import { Route as GroupBuyingCampaignIdRouteImport } from './routes/group-buying_.$campaignId'
 import { Route as ProductsProductIdRouteImport } from './routes/products.$productId'
 import { Route as AuthenticatedDashboardAdminRouteImport } from './routes/_authenticated/dashboard.admin'
 import { Route as AuthenticatedDashboardBuyerRouteImport } from './routes/_authenticated/dashboard.buyer'
@@ -139,6 +140,11 @@ const TermsRoute = TermsRouteImport.update({
   path: '/terms',
   getParentRoute: () => rootRouteImport,
 } as any)
+const GroupBuyingCampaignIdRoute = GroupBuyingCampaignIdRouteImport.update({
+  id: '/group-buying_/$campaignId',
+  path: '/group-buying/$campaignId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProductsProductIdRoute = ProductsProductIdRouteImport.update({
   id: '/products/$productId',
   path: '/products/$productId',
@@ -184,6 +190,7 @@ export interface FileRoutesByFullPath {
   '/signup': typeof SignupRoute
   '/suppliers': typeof SuppliersRoute
   '/terms': typeof TermsRoute
+  '/group-buying/$campaignId': typeof GroupBuyingCampaignIdRoute
   '/products/$productId': typeof ProductsProductIdRoute
   '/dashboard/admin': typeof AuthenticatedDashboardAdminRoute
   '/dashboard/buyer': typeof AuthenticatedDashboardBuyerRoute
@@ -210,6 +217,7 @@ export interface FileRoutesByTo {
   '/signup': typeof SignupRoute
   '/suppliers': typeof SuppliersRoute
   '/terms': typeof TermsRoute
+  '/group-buying/$campaignId': typeof GroupBuyingCampaignIdRoute
   '/products/$productId': typeof ProductsProductIdRoute
   '/dashboard/admin': typeof AuthenticatedDashboardAdminRoute
   '/dashboard/buyer': typeof AuthenticatedDashboardBuyerRoute
@@ -238,6 +246,7 @@ export interface FileRoutesById {
   '/signup': typeof SignupRoute
   '/suppliers': typeof SuppliersRoute
   '/terms': typeof TermsRoute
+  '/group-buying_/$campaignId': typeof GroupBuyingCampaignIdRoute
   '/products/$productId': typeof ProductsProductIdRoute
   '/_authenticated/dashboard/admin': typeof AuthenticatedDashboardAdminRoute
   '/_authenticated/dashboard/buyer': typeof AuthenticatedDashboardBuyerRoute
@@ -266,6 +275,7 @@ export interface FileRouteTypes {
     | '/signup'
     | '/suppliers'
     | '/terms'
+    | '/group-buying/$campaignId'
     | '/products/$productId'
     | '/dashboard/admin'
     | '/dashboard/buyer'
@@ -292,6 +302,7 @@ export interface FileRouteTypes {
     | '/signup'
     | '/suppliers'
     | '/terms'
+    | '/group-buying/$campaignId'
     | '/products/$productId'
     | '/dashboard/admin'
     | '/dashboard/buyer'
@@ -319,6 +330,7 @@ export interface FileRouteTypes {
     | '/signup'
     | '/suppliers'
     | '/terms'
+    | '/group-buying_/$campaignId'
     | '/products/$productId'
     | '/_authenticated/dashboard/admin'
     | '/_authenticated/dashboard/buyer'
@@ -347,6 +359,7 @@ export interface RootRouteChildren {
   SignupRoute: typeof SignupRoute
   SuppliersRoute: typeof SuppliersRoute
   TermsRoute: typeof TermsRoute
+  GroupBuyingCampaignIdRoute: typeof GroupBuyingCampaignIdRoute
   ProductsProductIdRoute: typeof ProductsProductIdRoute
 }
 
@@ -499,6 +512,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TermsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/group-buying_/$campaignId': {
+      id: '/group-buying_/$campaignId'
+      path: '/group-buying/$campaignId'
+      fullPath: '/group-buying/$campaignId'
+      preLoaderRoute: typeof GroupBuyingCampaignIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/products/$productId': {
       id: '/products/$productId'
       path: '/products/$productId'
@@ -567,6 +587,7 @@ const rootRouteChildren: RootRouteChildren = {
   SignupRoute: SignupRoute,
   SuppliersRoute: SuppliersRoute,
   TermsRoute: TermsRoute,
+  GroupBuyingCampaignIdRoute: GroupBuyingCampaignIdRoute,
   ProductsProductIdRoute: ProductsProductIdRoute,
 }
 export const routeTree = rootRouteImport

@@ -194,10 +194,16 @@ export type Database = {
       }
       group_buying_campaigns: {
         Row: {
+          business_count: number
           closes_at: string
+          committed_quantity: number
           created_at: string
           id: string
+          lifecycle: string
+          max_quantity: number
+          normal_price: number
           product_id: string
+          starts_at: string
           status: string
           supplier_id: string
           target_quantity: number
@@ -205,10 +211,16 @@ export type Database = {
           unit_price: number
         }
         Insert: {
+          business_count?: number
           closes_at: string
+          committed_quantity?: number
           created_at?: string
           id?: string
+          lifecycle?: string
+          max_quantity?: number
+          normal_price?: number
           product_id: string
+          starts_at?: string
           status?: string
           supplier_id: string
           target_quantity: number
@@ -216,10 +228,16 @@ export type Database = {
           unit_price: number
         }
         Update: {
+          business_count?: number
           closes_at?: string
+          committed_quantity?: number
           created_at?: string
           id?: string
+          lifecycle?: string
+          max_quantity?: number
+          normal_price?: number
           product_id?: string
+          starts_at?: string
           status?: string
           supplier_id?: string
           target_quantity?: number
@@ -246,22 +264,31 @@ export type Database = {
       group_buying_participants: {
         Row: {
           campaign_id: string
+          commitment_status: string
           created_at: string
+          delivery: Json
           id: string
+          order_id: string | null
           quantity: number
           user_id: string
         }
         Insert: {
           campaign_id: string
+          commitment_status?: string
           created_at?: string
+          delivery?: Json
           id?: string
+          order_id?: string | null
           quantity: number
           user_id: string
         }
         Update: {
           campaign_id?: string
+          commitment_status?: string
           created_at?: string
+          delivery?: Json
           id?: string
+          order_id?: string | null
           quantity?: number
           user_id?: string
         }
@@ -271,6 +298,13 @@ export type Database = {
             columns: ["campaign_id"]
             isOneToOne: false
             referencedRelation: "group_buying_campaigns"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "group_buying_participants_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
             referencedColumns: ["id"]
           },
           {
@@ -339,6 +373,7 @@ export type Database = {
       orders: {
         Row: {
           buyer_id: string
+          campaign_id: string | null
           created_at: string
           delivery: Json
           id: string
@@ -351,6 +386,7 @@ export type Database = {
         }
         Insert: {
           buyer_id: string
+          campaign_id?: string | null
           created_at?: string
           delivery?: Json
           id?: string
@@ -363,6 +399,7 @@ export type Database = {
         }
         Update: {
           buyer_id?: string
+          campaign_id?: string | null
           created_at?: string
           delivery?: Json
           id?: string
@@ -379,6 +416,13 @@ export type Database = {
             columns: ["buyer_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "orders_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "group_buying_campaigns"
             referencedColumns: ["id"]
           },
           {
@@ -845,6 +889,9 @@ export type Database = {
         Args: { next_status: string; order_id: string }
         Returns: undefined
       }
+      create_group_campaign: { Args: { payload: Json }; Returns: string }
+      expire_group_campaigns: { Args: never; Returns: undefined }
+      group_buyer_eligible: { Args: never; Returns: boolean }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -852,12 +899,25 @@ export type Database = {
         }
         Returns: boolean
       }
+      join_group_campaign: {
+        Args: { address: Json; cid: string; qty: number }
+        Returns: string
+      }
+      joined_group_campaign: { Args: { cid: string }; Returns: boolean }
+      manage_group_campaign: {
+        Args: { action: string; cid: string }
+        Returns: string
+      }
       market_unit_price: {
         Args: { base: number; qty: number; tiers: Json }
         Returns: number
       }
       owns_supplier: { Args: { sid: string }; Returns: boolean }
       public_product: { Args: { pid: string }; Returns: boolean }
+      release_group_campaign: {
+        Args: { cid: string; final_state: string }
+        Returns: undefined
+      }
       request_cart_order: {
         Args: { address: Json; request_id: string }
         Returns: string[]

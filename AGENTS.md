@@ -22,3 +22,5 @@
 - Product media is stored privately with renewable signed links, and catalogue adapters preserve the existing UI shapes.
 - Buyer tools share decimal-based math and authenticated history writes; the advisor may rank allowlisted catalogue IDs with AI, but displayed facts and all costs remain catalogue- or rule-derived.
 - Impact history records user-supplied baseline weights as estimates, even when linked to delivered order units, so fulfillment never implies confirmed environmental benefit.
+- Group commitments use campaign and product row locks, reserve stock at commitment time and convert each participant once to a discounted order; direct campaign/participant writes are revoked.
+- Campaign lifecycle is separate from the deprecated legacy status; expiry is refreshed on reads and joins, and private participant reads use a non-recursive security-definer membership helper.

@@ -43,6 +43,34 @@
       "when": 1793706310326,
       "tag": "0005_buyer_tool_history",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1793707133016,
+      "tag": "0006_group_buying_structure",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1793707159316,
+      "tag": "0007_group_buying_transactions",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1793707189395,
+      "tag": "0008_group_campaign_private_read",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1793707337845,
+      "tag": "0009_fix_group_expiry_alias",
+      "breakpoints": true
     }
   ]
 }
