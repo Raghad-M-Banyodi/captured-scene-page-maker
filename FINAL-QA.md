@@ -3,7 +3,7 @@
 Date: 3 November 2026. Existing design and records preserved; no hosted fictional accounts, products, orders or rewards were inserted. No publication was performed.
 
 ## Working features checked
-- Disposable localhost database, loaded with **all 19 migrations**: simulated restaurant and supplier signup triggers; independent supplier/business approval; supplier product creation, administrative publication and anonymous catalogue readback.
+- Disposable localhost database, loaded with **all 20 migrations**: simulated restaurant and supplier signup triggers; independent supplier/business approval; supplier product creation, administrative publication and anonymous catalogue readback. A **pending** supplier can create and manage draft products, cannot publish them, and anonymous visitors cannot see them.
 - Five concurrent simulated restaurant buyers committed **1,000 containers each** to a **5,000-container** campaign at **₪0.60/unit**: exactly five **₪600** requests, total **₪3,000**; duplicate participation did not duplicate requests and capacity was enforced.
 - Cart request at **₪750**, stock reservation, idempotent retry, private buyer readback and supplier fulfillment through Delivered.
 - Paper/cardboard pickup, assignment, partner acceptance/scheduling, simulated receipt metadata, actual-weight recording, independent admin verification: **15 kg → 150 points exactly once**. Plastic requests and partner self-verification were rejected.
@@ -19,10 +19,12 @@ Date: 3 November 2026. Existing design and records preserved; no hosted fictiona
 4. Hosted function permissions differed from committed migration intentions: raw recycling rankings were callable by anonymous/signed-in clients and include account identifiers. Explicit grants were revoked; the sanitized public board continues to work. Trigger-only/internal functions and anonymous group mutations were also tightened. Hosted privilege readback confirms raw rankings are inaccessible to both client roles.
 5. Removed the incorrect PLA-lid alternative from the home example, explicitly labeled the simulated example, translated its rows and plastic-free caption, and corrected outdated advisor/impact descriptions without changing layout.
 6. Administrator test fixture source keys are unique so repeated isolated runs do not collide.
+7. Pending suppliers were blocked from the product form by an interface gate and by a database safeguard that rejected every product write until approval. Both now permit draft management while keeping publication restricted to approved suppliers; the hosted signed-in supplier saved a real draft product successfully, and the signed-out marketplace does not show it.
 
 ## Tests actually run
 - **47 tests passed across 8 files**, including cost, impact, commerce, group, recycling, account/admin and routing tests; rerun after changes.
-- `scripts/test-final-journey.py`: passed after loading every final migration into a fresh isolated database; before fixes, it reproduced all three approval/role/voucher defects.
+- `scripts/test-final-journey.py`: passed after loading every final migration into a fresh isolated database; before fixes, it reproduced all three approval/role/voucher defects. New assertions cover pending-supplier draft creation, publication denial and anonymous invisibility.
+- Hosted browser check: the signed-in pending supplier's product form now renders, saves a real draft product and returns to the product list without console errors; the signed-out marketplace does not list that product.
 - `scripts/test-admin-flow.py`: passed against the fully migrated isolated database.
 - **60 browser states**: 15 public/protected paths × English/Arabic × 1280×1800 and 438×682. No page runtime errors, unexpected alerts or horizontal overflow. Arabic document language/direction verified. Inspected screenshots of registration, recycling and calculator.
 - Signed-out dashboard/admin paths redirected to `/auth`; this is **not** signed-in dashboard verification.
@@ -35,7 +37,7 @@ Date: 3 November 2026. Existing design and records preserved; no hosted fictiona
 - Orders are purchase requests, not online payments, by design.
 
 ## Tests not performed / remaining uncertainty
-- Hosted backend readback shows **zero accounts and zero products**. Hosted restaurant/supplier registration-confirmation, independent admin approval and the full signed-in UI journey remain unverified. An isolated database simulation is not an authenticated browser session.
+- Hosted backend now has registered accounts (including one owner-designated administrator and one pending supplier with one real draft product). Hosted restaurant registration-confirmation, independent admin approval in the interface, buyer ordering and the full signed-in UI journey remain unverified. An isolated database simulation is not an authenticated browser session.
 - Actual email delivery, confirmation links and emailed recovery links; hosted account provider settings were not independently read.
 - Actual product/verification/collection uploads and renewable signed-link readback. Local receipt rows simulate metadata only, not binary storage uploads.
 - Signed-in buyer/supplier/recycling/admin forms, charts, mobile/Arabic panels, cart/order/campaign/private-history readback.
