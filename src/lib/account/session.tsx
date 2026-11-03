@@ -8,6 +8,9 @@ const Context = createContext<{user: User | null; roles: AppRole[]; loading: boo
 export async function readIdentity() {
   const { data, error } = await supabase.auth.getUser();
   if (error || !data.user) return {user:null, roles:[] as AppRole[]};
+  const access = await supabase.rpc('account_active', { uid: data.user.id });
+  if (access.error) throw access.error;
+  if (!access.data) return {user:data.user, roles:[] as AppRole[]};
   const response = await supabase.from('user_roles').select('role').eq('user_id',data.user.id);
   if (response.error) throw response.error;
   return {user:data.user, roles:(response.data ?? []).map(r=>r.role)};
