@@ -10,6 +10,7 @@ export function SiteFooter() {
       { to: "/how-it-works", label: t.nav.how },
       { to: "/group-buying", label: t.nav.group },
       { to: "/suppliers", label: t.footer.suppliers },
+      { to: "/recycling", label: t.account.recycling.title },
     ] },
     { title: t.footer.company, links: [
       { to: "/about", label: t.nav.about },

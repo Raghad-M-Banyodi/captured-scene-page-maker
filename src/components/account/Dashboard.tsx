@@ -8,6 +8,7 @@ import { ProductEditor } from './ProductEditor';
 import { Orders } from './Orders';
 import { GroupBuying } from './GroupBuying';
 import { BuyerTools } from './BuyerTools';
+import { Recycling } from './Recycling';
 import { supabase } from '@/integrations/supabase/client';
 import { useAccount } from '@/lib/account/session';
 import { dashboardPath, type AppRole } from '@/lib/account/rules';
@@ -28,7 +29,8 @@ export function Dashboard({role}:{role:AppRole}){
  }});
  const data=query.data;const ownSupplier=data?.suppliers.find(s=>s.user_id===uid);const ownProfile=data?.profiles.find(p=>p.id===uid);const ownBusiness=data?.businesses.find(p=>p.user_id===uid);
  const tabs=role==='buyer'?['overview','orders','saved','recommendations','comparison','group','impact','settings']:role==='supplier'?['overview','products','addProduct','inventory','orders','offers','verification','companySettings']:['overview','users','suppliers','review','orders','requests','analytics'];
- const label=(key:string)=>a[key as keyof typeof a] as string;
+ tabs.push('recycling');
+ const label=(key:string)=>key==='recycling'?a.recycling.title:a[key as keyof typeof a] as string;
  async function mutate(fn:()=>PromiseLike<{error:unknown}>){setBusy(true);try{const r=await fn();if(r.error)throw r.error;toast.success(a.savedNotice);await qc.invalidateQueries({queryKey:['dashboard']});await qc.invalidateQueries({queryKey:['catalogue']});}catch(e){toast.error(e instanceof Error?e.message:a.error);}finally{setBusy(false);}}
  const empty=<div className="py-16 text-center"><Package className="mx-auto h-10 w-10 text-primary/50"/><h2 className="mt-4 text-xl">{a.empty}</h2><p className="mt-2 text-muted-foreground">{a.emptyText}</p></div>;
  const field=(id:string,text:string,type='text',value:string|number='',maxLength=150)=><div className="space-y-2"><Label htmlFor={id}>{text}</Label><Input id={id} name={id} type={type} defaultValue={value} maxLength={maxLength} min={type==='number'?0:undefined} step={type==='number'?'any':undefined} required={['name_en','price','moq','stock','full_name','business_name'].includes(id)}/></div>;
@@ -40,6 +42,7 @@ export function Dashboard({role}:{role:AppRole}){
  return <div className="container-page py-10"><div className="mb-8 flex items-center gap-3"><LayoutDashboard className="h-7 w-7 text-primary"/><div><h1 className="text-3xl font-semibold text-forest">{role==='buyer'?t.auth.buyer:role==='supplier'?t.auth.supplierRole:a.dashboard}</h1><p className="mt-1 text-muted-foreground">{ownProfile?.full_name}</p></div></div><div className="grid gap-8 lg:grid-cols-[220px_1fr]"><nav className="flex gap-2 overflow-x-auto lg:flex-col" aria-label={a.dashboard}>{tabs.map(key=><Button key={key} variant={tab===key?'secondary':'ghost'} className="shrink-0 justify-start" onClick={()=>{setTab(key);setEditing(null);}}>{label(key)}</Button>)}</nav><section className="min-w-0"><h2 className="mb-6 text-2xl text-forest">{label(tab)}</h2>{query.isPending?<p role="status">{a.loading}</p>:query.error?<p role="alert" className="text-destructive">{a.error}</p>:<>
  {data&&(tab==='overview'||tab==='analytics')&&<div className="grid gap-4 sm:grid-cols-3">{[[a.orders,data.orders.length],[role==='buyer'?a.saved:a.products,role==='buyer'?data.saved.length:data.products.length],[role==='admin'?a.suppliers:a.total,role==='admin'?data.suppliers.length:formatILS(data.orders.reduce((sum,o)=>sum+Number(o.total),0),lang)]].map(([l,v])=><div key={l} className="rounded-lg border border-border bg-card p-6"><p className="text-sm text-muted-foreground">{l}</p><p className="mt-3 text-3xl font-semibold text-forest">{v}</p></div>)}</div>}
  {tab==='orders'&&<Orders/>}
+ {tab==='recycling'&&<Recycling/>}
  {data&&tab==='saved'&&(data.saved.length?<div className="divide-y divide-border">{data.saved.map(s=><div key={s.id} className="flex items-center justify-between gap-4 py-4">{s.products?<Link to="/products/$productId" params={{productId:s.product_id}} className="text-primary">{lang==='ar'?s.products.name_ar||s.products.name_en:s.products.name_en}</Link>:<span>{a.review}</span>}<Button variant="ghost" onClick={()=>void mutate(()=>supabase.from('saved_products').delete().eq('id',s.id))}>{a.remove}</Button></div>)}</div>:empty)}
  {['recommendations','comparison','impact'].includes(tab)&&<BuyerTools key={tab} initial={tab==='recommendations'?'advisor':tab==='comparison'?'cost':'impact'}/>}
  {['group','offers'].includes(tab)&&<GroupBuying supplierMode={role==='supplier'}/>}
