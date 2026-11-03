@@ -1,4 +1,7 @@
 # GreenSwitch account phase
+- [ ] Supplier campaigns, buyer commitments, progress/detail pages and history
+- [ ] Atomic target conversion, stock reservations, expiry and order integration
+- [ ] Group-buying rule/concurrency checks and signed-in workflow verification
 - [x] Real-product advisor wizard with allowlisted AI ranking, deterministic fallback and private history implemented
 - [x] Exact cost calculator, price tiers, charts and private calculation history implemented
 - [x] Weight-based impact estimates, delivered-order distinction and trends implemented
