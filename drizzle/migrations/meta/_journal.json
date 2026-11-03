@@ -1,0 +1,20 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1793704946771,
+      "tag": "0000_greenswitch_accounts_catalogue",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1793705343524,
+      "tag": "0001_tighten_account_authorization",
+      "breakpoints": true
+    }
+  ]
+}

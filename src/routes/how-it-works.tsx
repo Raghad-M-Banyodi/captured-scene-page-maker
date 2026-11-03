@@ -7,6 +7,8 @@ import { useI18n } from "@/lib/i18n";
 export const Route = createFileRoute("/how-it-works")({
   head: () => ({
     meta: [
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { title: "How It Works — GreenSwitch" },
       { name: "description", content: "Discover, compare and buy sustainable packaging — individually or through group orders." },
       { property: "og:title", content: "How GreenSwitch Works" },

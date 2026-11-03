@@ -1,4 +1,6 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { catalogueOptions } from "@/lib/account/catalogue";
 import { useMemo, useState } from "react";
 import { Search, SlidersHorizontal, PackageSearch } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -8,14 +10,17 @@ import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { ProductCard, DemoBadge } from "@/components/site/ProductCard";
+import { ProductCard } from "@/components/site/ProductCard";
 import { useI18n } from "@/lib/i18n";
-import { ATTRIBUTES, CATEGORIES, MATERIALS, PRODUCTS, SUPPLIERS, getSupplier } from "@/data/products";
+import { ATTRIBUTES, CATEGORIES, MATERIALS } from "@/data/products";
 import { filterProducts, type Filters, defaultFilters } from "@/lib/filter-products";
 
 export const Route = createFileRoute("/marketplace")({
+  loader: ({context}) => context.queryClient.ensureQueryData(catalogueOptions),
   head: () => ({
     meta: [
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { title: "Marketplace — GreenSwitch" },
       { name: "description", content: "Search and compare sustainable packaging by category, material, price and supplier." },
       { property: "og:title", content: "Sustainable Packaging Marketplace — GreenSwitch" },
@@ -27,11 +32,13 @@ export const Route = createFileRoute("/marketplace")({
 
 function Marketplace() {
   const { t, lang } = useI18n();
+  const {data:{products:PRODUCTS,suppliers:SUPPLIERS}} = useSuspenseQuery(catalogueOptions);
+  const getSupplier=(id:string)=>SUPPLIERS.find(s=>s.id===id);
   const [f, setF] = useState<Filters>(defaultFilters);
 
   const results = useMemo(
     () => filterProducts(PRODUCTS, f, (p) => [p.name.en, p.name.ar, getSupplier(p.supplierId)?.name.en ?? "", getSupplier(p.supplierId)?.name.ar ?? "", MATERIALS.find((m) => m.id === p.material)?.en ?? ""].join(" ")),
-    [f],
+    [f, PRODUCTS, SUPPLIERS],
   );
 
   const toggle = <K extends "categories" | "materials" | "attributes">(key: K, id: string) =>
@@ -80,9 +87,10 @@ function Marketplace() {
           <h1 className="text-4xl font-semibold text-forest md:text-5xl">{t.market.title}</h1>
           <p className="mt-2 text-muted-foreground">{t.market.subtitle}</p>
         </div>
-        <DemoBadge />
+
       </div>
 
+      {import.meta.env.DEV&&<Button variant="ghost" asChild className="mt-4"><Link to="/development-demo">{t.account.devDemo}</Link></Button>}
       <div className="mt-8 flex flex-col gap-3 sm:flex-row">
         <div className="relative flex-1">
           <Search className="pointer-events-none absolute start-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -119,7 +127,7 @@ function Marketplace() {
             </div>
           ) : (
             <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
-              {results.map((p) => <ProductCard key={p.id} product={p} />)}
+              {results.map((p) => <ProductCard key={p.id} product={p} supplier={getSupplier(p.supplierId)} />)}
             </div>
           )}
         </div>

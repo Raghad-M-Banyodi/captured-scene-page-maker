@@ -5,6 +5,8 @@ import { ComingSoon } from "@/components/site/ComingSoon";
 export const Route = createFileRoute("/privacy")({
   head: () => ({
     meta: [
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { title: "Privacy Policy — GreenSwitch" },
       { name: "description", content: "Our privacy policy will be published before accounts go live." },
       { property: "og:title", content: "Privacy Policy — GreenSwitch" },

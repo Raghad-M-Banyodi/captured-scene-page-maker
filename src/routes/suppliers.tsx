@@ -5,6 +5,8 @@ import { ComingSoon } from "@/components/site/ComingSoon";
 export const Route = createFileRoute("/suppliers")({
   head: () => ({
     meta: [
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { title: "Suppliers — GreenSwitch" },
       { name: "description", content: "A directory of verified sustainable packaging suppliers across Palestine is on the way." },
       { property: "og:title", content: "Suppliers — GreenSwitch" },

@@ -5,6 +5,8 @@ import { ComingSoon } from "@/components/site/ComingSoon";
 export const Route = createFileRoute("/terms")({
   head: () => ({
     meta: [
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { title: "Terms of Service — GreenSwitch" },
       { name: "description", content: "Our terms of service will be published before ordering goes live." },
       { property: "og:title", content: "Terms of Service — GreenSwitch" },

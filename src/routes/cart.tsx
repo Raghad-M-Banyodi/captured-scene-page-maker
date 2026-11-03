@@ -1,17 +1,10 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { ShoppingCart } from "lucide-react";
-import { ComingSoon } from "@/components/site/ComingSoon";
-
-export const Route = createFileRoute("/cart")({
-  head: () => ({
-    meta: [
-      { title: "Shopping Cart — GreenSwitch" },
-      { name: "description", content: "Your cart will be available once ordering is connected." },
-      { property: "og:title", content: "Shopping Cart — GreenSwitch" },
-      { property: "og:description", content: "Your cart will be available once ordering is connected." },
-    ],
-  }),
-  component: () => (
-    <ComingSoon icon={ShoppingCart} title={{ en: "Shopping Cart", ar: "سلة التسوق" }} text={{ en: "Your cart will be available once ordering is connected.", ar: "ستتوفر سلتك عند ربط نظام الطلب." }} />
-  ),
-});
+import { createFileRoute, Link } from '@tanstack/react-router';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { useI18n, formatILS } from '@/lib/i18n';
+import { useAccount } from '@/lib/account/session';
+import { supabase } from '@/integrations/supabase/client';
+export const Route=createFileRoute('/cart')({head:()=>({meta:[{title:'Shopping Cart — GreenSwitch'},{name:'description',content:'Manage packaging quantities in your GreenSwitch cart.'},{property:'og:title',content:'Shopping Cart — GreenSwitch'},{property:'og:description',content:'Manage packaging quantities in your GreenSwitch cart.'},{property:'og:type',content:'website'},{name:'twitter:card',content:'summary_large_image'}]}),component:Cart});
+function Cart(){const {t,lang}=useI18n();const a=t.account;const account=useAccount();const qc=useQueryClient();const query=useQuery({queryKey:['cart',account.user?.id],enabled:!!account.user&&account.roles.includes('buyer'),queryFn:async()=>{const r=await supabase.from('cart_items').select('*,products(*)');if(r.error)throw r.error;return r.data??[];}});return <div className="container-page py-12"><h1 className="text-4xl text-forest">{a.cart}</h1>{!account.user?<div className="mt-8"><p>{a.signInRequired}</p><Button asChild className="mt-4"><Link to="/login">{t.nav.login}</Link></Button></div>:query.isPending?<p className="mt-8">{a.loading}</p>:query.error?<p role="alert" className="mt-8 text-destructive">{a.error}</p>:<div className="mt-8">{!query.data?.length?<p>{a.empty}</p>:query.data.map(i=><div key={i.id} className="flex flex-wrap items-center gap-4 border-b border-border py-5"><div className="min-w-0 flex-1">{i.products?<Link to="/products/$productId" params={{productId:i.product_id}} className="font-semibold text-primary">{lang==='ar'?i.products.name_ar||i.products.name_en:i.products.name_en}</Link>:<p>{a.review}</p>}</div><Input type="number" className="w-28" min={i.products?.moq??1} defaultValue={i.quantity} aria-label={a.quantity} onBlur={async e=>{const quantity=Number(e.target.value);if(!Number.isInteger(quantity)||quantity<(i.products?.moq??1)){toast.error(a.invalid);return;}const r=await supabase.from('cart_items').update({quantity}).eq('id',i.id);if(r.error)toast.error(a.error);await qc.invalidateQueries({queryKey:['cart']});}}/><strong>{i.products?formatILS(i.quantity*Number(i.products.price),lang):'—'}</strong><Button variant="ghost" onClick={async()=>{const r=await supabase.from('cart_items').delete().eq('id',i.id);if(r.error)toast.error(a.error);await qc.invalidateQueries({queryKey:['cart']});}}>{a.remove}</Button></div>)}</div>}</div>;}
