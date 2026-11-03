@@ -103,6 +103,15 @@ assert value(f"SELECT sum(amount),count(*) FROM green_points_ledger WHERE user_i
 board = json.loads(value('SET ROLE anon; SELECT recycling_public_board()'))
 assert any(row['kg'] == 15 for row in board['rankings'])
 assert all('user_id' not in row for row in board['rankings'])
+action(buyer,'opt_out',dict(participate=False))
+assert json.loads(value('SET ROLE anon; SELECT recycling_public_board()'))['rankings'] == []
+action(buyer,'opt_out',dict(participate=True))
+def redeem(_):
+    return action(buyer,'redeem',dict(key=str(uuid.uuid4()),points=100),False)
+with concurrent.futures.ThreadPoolExecutor(max_workers=3) as pool:
+    redemptions=list(pool.map(redeem,range(3)))
+assert sum(result.returncode == 0 for result in redemptions) == 1
+assert value(f"SELECT sum(amount) FROM green_points_ledger WHERE user_id='{buyer}'") == '50.000'
 
 # A monthly winner voucher goes through independent review and supplier consent.
 period = value("SELECT (date_trunc('month',now() AT TIME ZONE 'Asia/Gaza')-interval '1 month')::date")
