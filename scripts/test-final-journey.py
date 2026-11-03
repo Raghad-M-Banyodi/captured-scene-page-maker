@@ -115,7 +115,7 @@ assert action(buyer, 'apply', dict(orderId=oid,voucherId=vid), False).returncode
 manage(admin, 'voucher_review', dict(id=vid,status='approved'))
 action(supplier, 'consent', dict(supplierId=sid,approved=True))
 action(buyer, 'apply', dict(orderId=oid,voucherId=vid))
-assert value(f"SELECT total,green_discount FROM orders WHERE id='{oid}'") == '650.00|100.00'
+assert value(f"SELECT total,green_discount::numeric(12,2) FROM orders WHERE id='{oid}'") == '650.00|100.00'
 as_user(supplier, f"SELECT change_order_status('{oid}','accepted')")
 
 # Concrete bug regressions, run all three so pre-fix results identify each defect.
@@ -123,7 +123,7 @@ failures = []
 replay = action(buyer, 'apply', dict(orderId=oid,voucherId=vid), False)
 if replay.returncode:
     failures.append('voucher replay after supplier acceptance rejected')
-assert value(f"SELECT total,green_discount FROM orders WHERE id='{oid}'") == '650.00|100.00'
+assert value(f"SELECT total,green_discount::numeric(12,2) FROM orders WHERE id='{oid}'") == '650.00|100.00'
 manage(admin, 'account', dict(userId=buyer,status='suspended',reason='SIMULATED QA suspension'))
 revoke = action(admin, 'approve_business', dict(userId=buyer,approved=False), False)
 if revoke.returncode:
