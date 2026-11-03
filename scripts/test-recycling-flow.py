@@ -43,7 +43,11 @@ assert sql(f"SELECT sum(amount) FROM green_points_ledger WHERE user_id='{buyer}'
 vid=sql(f"SELECT id FROM green_vouchers WHERE user_id='{buyer}' LIMIT 1").stdout.strip();sid=str(uuid.uuid4());oid=str(uuid.uuid4())
 sql(f"INSERT INTO supplier_profiles VALUES('{sid}','{partner}','approved');INSERT INTO orders(id,buyer_id,supplier_id,status,total) VALUES('{oid}','{buyer}','{sid}','pending',5000)")
 assert action(buyer,'apply',dict(orderId=oid,voucherId=vid),False).returncode
-action(partner,'consent',dict(supplierId=sid,approved=True));action(buyer,'apply',dict(orderId=oid,voucherId=vid));action(buyer,'apply',dict(orderId=oid,voucherId=vid))
+action(partner,'consent',dict(supplierId=sid,approved=True))
+assert action(buyer,'apply',dict(orderId=oid,voucherId=vid),False).returncode
+review=sql(f"SELECT set_config('request.jwt.claim.sub','{admin}',false);SET ROLE authenticated;SELECT admin_manage('voucher_review','{json.dumps(dict(id=vid,status='approved'))}'::jsonb)").stdout.strip().splitlines()[-1]
+assert json.loads(review)['ok']
+action(buyer,'apply',dict(orderId=oid,voucherId=vid));action(buyer,'apply',dict(orderId=oid,voucherId=vid))
 assert sql(f"SELECT total,green_discount FROM orders WHERE id='{oid}'").stdout.strip()=='4900|100'
 other_v=sql(f"SELECT id FROM green_vouchers WHERE user_id='{buyer}' AND id<>'{vid}' LIMIT 1").stdout.strip()
 assert action(buyer,'apply',dict(orderId=oid,voucherId=other_v),False).returncode
