@@ -1,9 +1,12 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 
+import { accountStrings } from "./account/strings";
+
 export type Lang = "en" | "ar";
 
 const dict = {
   en: {
+    account: accountStrings.en,
     nav: { home: "Home", marketplace: "Marketplace", how: "How It Works", group: "Group Buying", impact: "Environmental Impact", about: "About Us", login: "Log in", signup: "Sign up", menu: "Menu" },
     demo: "Demo data",
     comingSoon: "Coming in the next phase",
@@ -76,6 +79,7 @@ const dict = {
     soon: { back: "Back home", explore: "Explore marketplace" },
   },
   ar: {
+    account: accountStrings.ar,
     nav: { home: "الرئيسية", marketplace: "السوق", how: "كيف يعمل", group: "الشراء الجماعي", impact: "الأثر البيئي", about: "من نحن", login: "تسجيل الدخول", signup: "إنشاء حساب", menu: "القائمة" },
     demo: "بيانات تجريبية",
     comingSoon: "قريباً في المرحلة القادمة",

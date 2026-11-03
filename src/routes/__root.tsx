@@ -12,6 +12,7 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { AccountProvider } from "@/lib/account/session";
 import { I18nProvider } from "@/lib/i18n";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
@@ -124,7 +125,7 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <I18nProvider>
+      <I18nProvider><AccountProvider>
         <div className="flex min-h-screen flex-col">
           <SiteHeader />
           <main className="flex-1">
@@ -133,7 +134,7 @@ function RootComponent() {
           <SiteFooter />
         </div>
         <Toaster position="bottom-center" />
-      </I18nProvider>
+      </AccountProvider></I18nProvider>
     </QueryClientProvider>
   );
 }
