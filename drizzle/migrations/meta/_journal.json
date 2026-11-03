@@ -120,6 +120,20 @@
       "when": 1793708619855,
       "tag": "0016_admin_role_grant_safety",
       "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "7",
+      "when": 1793709085043,
+      "tag": "0017_final_qa_approval_and_voucher_retries",
+      "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "7",
+      "when": 1793709259711,
+      "tag": "0018_restrict_internal_security_definer_execution",
+      "breakpoints": true
     }
   ]
 }

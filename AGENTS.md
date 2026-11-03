@@ -26,3 +26,6 @@
 - Campaign lifecycle is separate from the deprecated legacy status; expiry is refreshed on reads and joins, and private participant reads use a non-recursive security-definer membership helper.
 - Recycling partners and business approval use dedicated protected records rather than registration roles; atomic authenticated RPCs own pickups, immutable points, monthly snapshots and single-use vouchers, with private request-scoped evidence and supplier-consented order discounts.
 - Admin surfaces reuse the existing Dashboard shell and working recycling modules; server-verified admin reads, protected account-access records, restrictive active-account RLS/RPC guards and append-only database audit triggers enforce management independently of the UI.
+- Administrator supplier-role grants transactionally provision a pending supplier profile; recycling revocations remain possible for inactive targets, and voucher replay validates ownership before distinguishing prior success from new eligibility.
+- The final integrated journey test uses a fully migrated disposable localhost database with explicitly simulated records; it never provisions hosted test identities or modifies hosted business data.
+- Raw recycling rankings and trigger-only security-definer functions have no client EXECUTE grants; only the sanitized public board exposes competition results.

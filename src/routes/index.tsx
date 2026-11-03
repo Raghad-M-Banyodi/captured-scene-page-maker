@@ -71,8 +71,8 @@ function Home() {
             <div className="absolute -bottom-6 start-6 flex items-center gap-3 rounded-2xl bg-card p-4 text-card-foreground shadow-lift">
               <span className="grid h-10 w-10 place-items-center rounded-xl bg-secondary text-primary"><Recycle className="h-5 w-5" /></span>
               <div>
-                <div className="text-sm font-semibold">100% plastic-free</div>
-                <div className="text-xs text-muted-foreground">{lang === "ar" ? "بدائل مختارة" : "Curated alternatives"}</div>
+                <div className="text-sm font-semibold">{t.hero.plasticFree}</div>
+                <div className="text-xs text-muted-foreground">{t.hero.curated}</div>
               </div>
             </div>
           </div>
@@ -141,8 +141,8 @@ function Home() {
               <Button variant="hero" size="lg" className="mt-8" asChild><Link to="/recommendations"><Sparkles /> {t.ai.cta}</Link></Button>
             </div>
             <div className="space-y-3 rounded-3xl border border-forest-foreground/15 bg-forest-foreground/5 p-6 backdrop-blur" aria-hidden>
-              <div className="text-xs text-forest-foreground/60">{lang === "ar" ? "مثال: مقهى في رام الله" : "Example: café in Ramallah"}</div>
-              {[["Plastic cup 12oz", "Kraft cup + PLA lid"], ["Foam container", "Bagasse clamshell"], ["Plastic bag", "Kraft twisted-handle bag"]].map(([a, b]) => (
+              <div className="text-xs text-forest-foreground/60">{t.ai.example}</div>
+              {t.ai.examples.map(([a, b]) => (
                 <div key={a} className="flex items-center justify-between gap-3 rounded-2xl bg-forest-foreground/10 px-4 py-3 text-sm">
                   <span className="text-forest-foreground/60 line-through">{a}</span>
                   <ArrowRight className="h-4 w-4 text-lime rtl:-scale-x-100" />

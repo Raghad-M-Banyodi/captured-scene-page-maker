@@ -18,6 +18,7 @@ const dict = {
       cta1: "Explore Sustainable Packaging",
       cta2: "Find My Best Alternative",
       stat1: "Product categories", stat2: "Local suppliers (demo)", stat3: "Prices in shekels",
+      plasticFree: "Plastic-free alternatives", curated: "Curated alternatives",
     },
     intro: {
       eyebrow: "The challenge",
@@ -39,8 +40,10 @@ const dict = {
     product: { moq: "MOQ", by: "by", verified: "Verified", unverified: "Not yet verified", details: "View details" },
     ai: {
       eyebrow: "Smart recommendations", title: "Your best alternative, recommended in seconds",
-      text: "Our upcoming AI advisor will analyse your current packaging, budget and volumes to suggest the most suitable sustainable replacements and the suppliers who carry them.",
-      cta: "Preview the advisor",
+      text: "Find suitable alternatives from the approved catalogue using your packaging needs, budget and volumes. AI ranking is used when available; otherwise results use clearly labeled catalogue matching.",
+      cta: "Find alternatives",
+      example: "Simulated example: café in Ramallah",
+      examples: [["Plastic cup 12oz", "Uncoated paper cup"], ["Foam container", "Bagasse clamshell"], ["Plastic bag", "Kraft paper bag"]],
     },
     group: {
       eyebrow: "Group buying", title: "Buy together. Pay less.",
@@ -51,7 +54,7 @@ const dict = {
     },
     impact: {
       eyebrow: "Environmental impact", title: "See the plastic you're keeping out of Palestine's land and sea",
-      text: "Every order will feed an impact estimate based on the plastic each product replaces.",
+      text: "Estimate plastic replaced using your baseline plastic weight and quantities; these estimates are separate from verified recycling collections.",
       example: "Illustrative example — not real data",
       m1: "Plastic avoided this year", m2: "Single-use items replaced", m3: "Switch progress",
       cta: "Learn about impact tracking",
@@ -91,6 +94,7 @@ const dict = {
       cta1: "استكشف التغليف المستدام",
       cta2: "اعثر على أفضل بديل لي",
       stat1: "فئات المنتجات", stat2: "موردون محليون (تجريبي)", stat3: "الأسعار بالشيكل",
+      plasticFree: "بدائل خالية من البلاستيك", curated: "بدائل مختارة",
     },
     intro: {
       eyebrow: "التحدي",
@@ -112,8 +116,10 @@ const dict = {
     product: { moq: "الحد الأدنى", by: "من", verified: "موثّق", unverified: "غير موثّق بعد", details: "عرض التفاصيل" },
     ai: {
       eyebrow: "توصيات ذكية", title: "أفضل بديل لك خلال ثوانٍ",
-      text: "سيحلل مستشارنا الذكي القادم تغليفك الحالي وميزانيتك وكمياتك ليقترح أنسب البدائل المستدامة والموردين الذين يوفرونها.",
-      cta: "اطّلع على المستشار",
+      text: "اعثر على بدائل مناسبة من الكتالوج المعتمد وفق احتياجات التغليف والميزانية والكميات. يُستخدم الترتيب بالذكاء الاصطناعي عند توفره، وإلا تُعرض مطابقة الكتالوج مع توضيح ذلك.",
+      cta: "اعثر على بدائل",
+      example: "مثال محاكاة: مقهى في رام الله",
+      examples: [["كوب بلاستيكي 12 أونصة", "كوب ورقي غير مطلي"], ["علبة فلين", "علبة من تفل قصب السكر"], ["كيس بلاستيكي", "كيس ورق كرافت"]],
     },
     group: {
       eyebrow: "الشراء الجماعي", title: "اشترِ مع غيرك. وادفع أقل.",
@@ -124,7 +130,7 @@ const dict = {
     },
     impact: {
       eyebrow: "الأثر البيئي", title: "شاهد البلاستيك الذي تُبعده عن أرض فلسطين وبحرها",
-      text: "سيُغذّي كل طلب تقديراً للأثر بناءً على البلاستيك الذي يستبدله كل منتج.",
+      text: "قدّر البلاستيك المستبدل باستخدام وزن البلاستيك الأساسي والكميات التي تقدمها؛ هذه التقديرات منفصلة عن عمليات الجمع الموثقة.",
       example: "مثال توضيحي — ليست بيانات حقيقية",
       m1: "بلاستيك تم تجنبه هذا العام", m2: "قطع أحادية الاستخدام تم استبدالها", m3: "تقدّم التحوّل",
       cta: "تعرّف على تتبع الأثر",
