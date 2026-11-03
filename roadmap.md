@@ -1,5 +1,6 @@
 # GreenSwitch account phase
-- [ ] Final focused QA: regression/security checks, isolated complete journey, bilingual mobile checks, critical fixes and publication-readiness report
+- [x] Final focused QA: 47 regressions, 60 public browser states, fully migrated isolated journey and admin tests, security review, four critical approval/retry/permission fixes and FINAL-QA.md
+- [ ] Operational publication verification — blocked by zero hosted accounts/products, no designated administrator, actual email/private uploads and final privacy/terms
 - [x] Extend existing admin shell with real metrics, management modules, analytics and settings
 - [x] Enforce /admin authorization, account suspension, private reviews and immutable audit history
 - [x] Verify buyer/supplier/partner backend denial, admin controls and updated recycling voucher-review flow with isolated authenticated tests; 47 regression tests pass
