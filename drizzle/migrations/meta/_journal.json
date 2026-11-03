@@ -92,6 +92,13 @@
       "when": 1793708061599,
       "tag": "0012_fix_recycling_month_finalization",
       "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1793708094733,
+      "tag": "0013_recycling_board_reward_configuration",
+      "breakpoints": true
     }
   ]
 }
