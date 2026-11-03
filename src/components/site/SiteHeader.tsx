@@ -4,6 +4,11 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { useI18n } from "@/lib/i18n";
+import { useAccount } from "@/lib/account/session";
+import { dashboardPath } from "@/lib/account/rules";
+import { supabase } from "@/integrations/supabase/client";
+import { useQueryClient } from "@tanstack/react-query";
+import { useNavigate } from "@tanstack/react-router";
 import { Logo } from "./Logo";
 
 export function useNavItems() {
@@ -29,6 +34,11 @@ export function LangSwitch() {
 
 export function SiteHeader() {
   const { t, dir } = useI18n();
+  const account = useAccount();
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
+  async function logout() { await queryClient.cancelQueries(); queryClient.clear(); await supabase.auth.signOut(); await navigate({to:"/auth",replace:true}); setOpen(false); }
+  const accountLinks = account.user ? <><Button variant="ghost" asChild><Link to={dashboardPath(account.roles)} onClick={()=>setOpen(false)}>{t.account.dashboard}</Link></Button><Button variant="outline" onClick={()=>void logout()}>{t.account.logout}</Button></> : <><Button variant="ghost" asChild><Link to="/login" onClick={()=>setOpen(false)}>{t.nav.login}</Link></Button><Button asChild><Link to="/signup" onClick={()=>setOpen(false)}>{t.nav.signup}</Link></Button></>;
   const items = useNavItems();
   const [open, setOpen] = useState(false);
 
@@ -50,8 +60,7 @@ export function SiteHeader() {
         </nav>
         <div className="hidden items-center gap-2 lg:flex">
           <LangSwitch />
-          <Button variant="ghost" asChild><Link to="/login">{t.nav.login}</Link></Button>
-          <Button asChild><Link to="/signup">{t.nav.signup}</Link></Button>
+          {accountLinks}
         </div>
         <div className="flex items-center gap-1 lg:hidden">
           <LangSwitch />
@@ -68,8 +77,7 @@ export function SiteHeader() {
                   </Link>
                 ))}
                 <div className="mt-4 grid gap-2 px-2">
-                  <Button variant="outline" asChild><Link to="/login" onClick={() => setOpen(false)}>{t.nav.login}</Link></Button>
-                  <Button asChild><Link to="/signup" onClick={() => setOpen(false)}>{t.nav.signup}</Link></Button>
+                  {accountLinks}
                 </div>
               </nav>
             </SheetContent>

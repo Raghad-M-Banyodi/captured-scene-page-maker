@@ -1,0 +1,3 @@
+import { createFileRoute } from '@tanstack/react-router';
+import { Dashboard } from '@/components/account/Dashboard';
+export const Route=createFileRoute('/_authenticated/dashboard/supplier')({head:()=>({meta:[{title:'Supplier Dashboard — GreenSwitch'},{name:'description',content:'Manage your GreenSwitch supplier account.'},{property:'og:title',content:'Supplier Dashboard — GreenSwitch'},{property:'og:description',content:'Manage your GreenSwitch supplier account.'},{property:'og:type',content:'website'},{name:'twitter:card',content:'summary_large_image'}]}),component:()=> <Dashboard role="supplier"/>});
