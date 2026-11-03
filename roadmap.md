@@ -1,4 +1,7 @@
 # GreenSwitch account phase
+- [ ] Extend existing admin shell with real metrics, management modules, analytics and settings
+- [ ] Enforce /admin authorization, account suspension, private reviews and immutable audit history
+- [ ] Verify admin denial for buyer/supplier/partner and admin actions with isolated tests; hosted checks require an admin account
 - [x] Recycling pickup workflow, approved business/partner access and private evidence
 - [x] Verified points ledger, configurable vouchers and supplier-approved discounts
 - [x] Palestine monthly podium, opt-out, historical winners and admin finalization
