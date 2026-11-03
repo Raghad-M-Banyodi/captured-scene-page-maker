@@ -4,6 +4,12 @@
 
 @custom-variant dark (&:is(.dark *));
 
+.campaign-progress { appearance: none; border: 0; border-radius: 8px; overflow: hidden; background: var(--secondary); }
+.campaign-progress::-webkit-progress-bar { background: var(--secondary); }
+.campaign-progress::-webkit-progress-value { background: var(--primary); border-radius: 8px; transition: width .3s ease; }
+.campaign-progress::-moz-progress-bar { background: var(--primary); border-radius: 8px; }
+@media (prefers-reduced-motion: reduce) { .campaign-progress::-webkit-progress-value { transition: none; } }
+
 @theme inline {
   --font-sans: "Manrope", "IBM Plex Sans Arabic", ui-sans-serif, system-ui, sans-serif;
   --font-display: "Fraunces", "IBM Plex Sans Arabic", ui-serif, Georgia, serif;
