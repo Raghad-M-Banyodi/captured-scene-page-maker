@@ -1,8 +1,9 @@
 # GreenSwitch account phase
-- [ ] Real-product advisor wizard with clearly labeled deterministic fallback and private history
-- [ ] Exact cost calculator, price tiers, charts and private calculation history
-- [ ] Weight-based impact estimates, completed-order distinction and trends
-- [ ] Restaurant/cafe calculation and recommendation tests; buyer tool verification
+- [x] Real-product advisor wizard with allowlisted AI ranking, deterministic fallback and private history implemented
+- [x] Exact cost calculator, price tiers, charts and private calculation history implemented
+- [x] Weight-based impact estimates, delivered-order distinction and trends implemented
+- [x] Restaurant/cafe math and grounded recommendation tests; public EN/AR pages checked
+- [ ] Signed-in buyer tool history, real-product recommendations and AI inference verification — requires a registered buyer and eligible catalogue products
 - [x] Supplier product pricing, composition, image/document uploads and non-plastic review implemented
 - [x] Persistent cart totals and supplier-specific secure purchase requests implemented
 - [x] Buyer order tracking and supplier fulfillment status updates implemented
