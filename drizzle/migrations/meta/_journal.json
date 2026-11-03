@@ -78,6 +78,13 @@
       "when": 1793707766658,
       "tag": "0010_recycling_schema",
       "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1793707805141,
+      "tag": "0011_recycling_transactions",
+      "breakpoints": true
     }
   ]
 }

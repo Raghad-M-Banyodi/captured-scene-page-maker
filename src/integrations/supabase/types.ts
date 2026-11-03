@@ -1269,6 +1269,10 @@ export type Database = {
       owns_supplier: { Args: { sid: string }; Returns: boolean }
       public_product: { Args: { pid: string }; Returns: boolean }
       recycling_access: { Args: { rid: string }; Returns: boolean }
+      recycling_action: {
+        Args: { action: string; payload: Json }
+        Returns: Json
+      }
       recycling_public_board: { Args: never; Returns: Json }
       recycling_rankings: { Args: { month_start: string }; Returns: Json }
       recycling_weights: { Args: { w: Json }; Returns: number }
