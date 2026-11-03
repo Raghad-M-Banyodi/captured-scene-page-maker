@@ -4,7 +4,7 @@
 - [x] Buyer order tracking and supplier fulfillment status updates implemented
 - [x] Fictional competition fixtures without certificate claims; isolated development seed only
 - [x] 17 regression tests; public pages checked without runtime errors
-- [ ] Signed-in end-to-end ordering, upload and database ownership checks — test-account access was declined
+- [ ] Finish signed-in buyer-to-supplier ordering, uploads, duplicate requests and private order checks; fix discovered issues
 - [x] Relational storage, ownership policies, role security, private documents
 - [x] Email registration, login, logout, recovery pages and protected dashboards
 - [x] Buyer accounts, saved products and carts; supplier products, inventory and verification; admin reviews
