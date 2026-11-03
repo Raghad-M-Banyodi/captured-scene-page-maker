@@ -22,6 +22,13 @@
       "when": 1793705754994,
       "tag": "0002_marketplace_purchase_requests",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1793705801637,
+      "tag": "0003_complete_order_statuses",
+      "breakpoints": true
     }
   ]
 }
