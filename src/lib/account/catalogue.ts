@@ -1,0 +1,9 @@
+import { queryOptions } from '@tanstack/react-query';
+import { fetchCatalogue } from './catalogue.functions';
+import { CATEGORIES, MATERIALS, type Product, type Supplier } from '@/data/products';
+import fallbackImage from '@/assets/hero.jpg';
+export const catalogueOptions=queryOptions({queryKey:['catalogue'],queryFn:async()=>{
+ const data=await fetchCatalogue();
+ const suppliers:Supplier[]=data.suppliers.map(s=>({id:s.id,name:{en:s.company_name,ar:s.company_name},city:{en:s.city,ar:s.city},verified:true,since:Number(s.created_at.slice(0,4))}));
+ const products:Product[]=data.products.filter(p=>suppliers.some(s=>s.id===p.supplier_id)).map(p=>({id:p.id,name:{en:p.name_en,ar:p.name_ar||p.name_en},description:{en:p.description_en,ar:p.description_ar||p.description_en},category:CATEGORIES.find(c=>c.id===p.category_slug)?.id??'other',material:MATERIALS.find(m=>m.id===p.material)?.id??'kraft',attributes:p.product_sustainability_attributes.map(a=>a.attribute as Product['attributes'][number]),price:Number(p.price),unit:{en:'per unit',ar:'للقطعة'},moq:p.moq,supplierId:p.supplier_id,image:p.product_images.sort((a,b)=>a.position-b.position)[0]?.url??fallbackImage,sizes:p.sizes,specs:[],certification:'none',plasticSavedG:0}));return {products,suppliers};
+},staleTime:30000});
