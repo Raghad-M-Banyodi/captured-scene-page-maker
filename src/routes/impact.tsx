@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Leaf } from "lucide-react";
-import { ComingSoon } from "@/components/site/ComingSoon";
+import { BuyerTools } from '@/components/account/BuyerTools';
+import { useI18n } from '@/lib/i18n';
+
 
 export const Route = createFileRoute("/impact")({
   head: () => ({
@@ -8,12 +9,11 @@ export const Route = createFileRoute("/impact")({
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { title: "Environmental Impact — GreenSwitch" },
-      { name: "description", content: "Track estimated plastic avoided and items replaced, calculated from your real orders. Tracking starts when ordering goes live." },
+      { name: "description", content: "Estimate plastic avoided using your baseline weights and track delivered packaging separately." },
       { property: "og:title", content: "Environmental Impact — GreenSwitch" },
-      { property: "og:description", content: "Track estimated plastic avoided and items replaced, calculated from your real orders. Tracking starts when ordering goes live." },
+      { property: "og:description", content: "Estimate plastic avoided using your baseline weights and track delivered packaging separately." },
     ],
   }),
-  component: () => (
-    <ComingSoon icon={Leaf} title={{ en: "Environmental Impact", ar: "الأثر البيئي" }} text={{ en: "Track estimated plastic avoided and items replaced, calculated from your real orders. Tracking starts when ordering goes live.", ar: "تابع تقدير البلاستيك المُتجنَّب والقطع المستبدلة بناءً على طلباتك الحقيقية. يبدأ التتبع عند تفعيل الطلب." }} />
-  ),
+  component: ToolPage,
 });
+function ToolPage(){const {t}=useI18n();return <div className="container-page py-12"><h1 className="text-4xl text-forest mb-8">{t.account.tools.impact}</h1><BuyerTools initial="impact"/></div>;}

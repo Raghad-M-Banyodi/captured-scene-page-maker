@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Calculator } from "lucide-react";
-import { ComingSoon } from "@/components/site/ComingSoon";
+import { BuyerTools } from '@/components/account/BuyerTools';
+import { useI18n } from '@/lib/i18n';
+
 
 export const Route = createFileRoute("/calculator")({
   head: () => ({
@@ -13,7 +14,6 @@ export const Route = createFileRoute("/calculator")({
       { property: "og:description", content: "Estimate your monthly packaging spend and compare the cost of switching." },
     ],
   }),
-  component: () => (
-    <ComingSoon icon={Calculator} title={{ en: "Cost Calculator", ar: "حاسبة التكلفة" }} text={{ en: "Estimate your monthly packaging spend and compare the cost of switching.", ar: "قدّر إنفاقك الشهري على التغليف وقارن تكلفة التحوّل." }} />
-  ),
+  component: ToolPage,
 });
+function ToolPage(){const {t}=useI18n();return <div className="container-page py-12"><h1 className="text-4xl text-forest mb-8">{t.account.tools.calculator}</h1><BuyerTools initial="cost"/></div>;}

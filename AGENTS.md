@@ -20,3 +20,5 @@
 - Development seeding refuses hosted backend URLs and never creates credentials, so demo records cannot enter live account flows.
 - Purchase requests and fulfillment transitions use authenticated RPC wrappers over atomic database functions; prices, stock reservations, ownership and idempotency remain enforced at the database boundary.
 - Product media is stored privately with renewable signed links, and catalogue adapters preserve the existing UI shapes.
+- Buyer tools share decimal-based math and authenticated history writes; the advisor may rank allowlisted catalogue IDs with AI, but displayed facts and all costs remain catalogue- or rule-derived.
+- Impact history records user-supplied baseline weights as estimates, even when linked to delivered order units, so fulfillment never implies confirmed environmental benefit.

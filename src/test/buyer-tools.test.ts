@@ -1,0 +1,13 @@
+import {describe,it,expect} from 'vitest';
+import {costBreakdown,impactCalculation,recommendProducts,impactSchema,type AdvisorInput,type AdvisorProduct} from '@/lib/account/buyer-tools';
+const product:AdvisorProduct={id:'11111111-1111-4111-8111-111111111111',price:0.65,moq:500,stock:10000,price_unit:'piece',pack_size:1,volume_discounts:[{min_quantity:1000,unit_price:0.6}],name_en:'Bagasse box',description_en:'Fibre packaging',category_slug:'containers',material:'bagasse',sizes:['750ml'],composition:'Sugarcane fibre',non_plastic:true,status:'published',is_demo:false};
+const input:AdvisorInput={businessType:'restaurant',packagedProduct:'Takeaway meal',temperature:'hot',foodUse:true,size:'750ml',monthlyQuantity:2000,currentPackaging:'Conventional plastic tub',currentPrice:0.5,budget:1500,priority:'balanced',category:'containers',lang:'en'};
+describe('Buyer tools',()=>{
+ it('calculates restaurant monthly and annual costs exactly',()=>{const r=costBreakdown(0.5,2000,product,1000);expect(r.currentMonthly).toBe(1000);expect(r.alternativeMonthly).toBe(1200);expect(r.monthlyDifference).toBe(200);expect(r.annualDifference).toBe(2400);expect(r.percentageChange).toBe(20);});
+ it('rounds cafe packs and respects minimum quantity',()=>{const r=costBreakdown(0.48,1001,{...product,price:45,moq:10,price_unit:'pack',pack_size:100},0);expect(r.purchaseQuantity).toBe(11);expect(r.suppliedPieces).toBe(1100);expect(r.alternativeMonthly).toBe(495);expect(r.currentMonthly).toBe(480.48);});
+ it('rejects a wholesale tier below its threshold',()=>expect(()=>costBreakdown(0.5,500,product,1000)).toThrow('Tier not eligible'));
+ it('handles zero baseline without fabricated percentage',()=>expect(costBreakdown(0,2000,product).percentageChange).toBeNull());
+ it('uses supplied weight times replacements, without carbon claims',()=>{expect(impactCalculation(12.5,2000)).toEqual({units:2000,kg:25,annualKg:300,annualUnits:24000});expect(impactSchema.safeParse({productId:product.id,quantity:2000,month:'2026-11'}).success).toBe(false);});
+ it('recommends only existing eligible products within budget and stock',()=>{const r=recommendProducts(input,[product,{...product,id:'plastic',material:'pla'},{...product,id:'demo',is_demo:true},{...product,id:'pending',status:'pending'}]);expect(r.map(p=>p.id)).toEqual([product.id]);expect(r[0]?.monthlyCost).toBe(1200);expect(recommendProducts({...input,budget:1000},[product])).toEqual([]);expect(recommendProducts(input,[{...product,stock:100}])).toEqual([]);});
+ it('returns up to five real candidates without inventing missing ones',()=>{expect(recommendProducts(input,[product])).toHaveLength(1);expect(recommendProducts(input,Array.from({length:7},(_,n)=>({...product,id:`existing-${n}`})))).toHaveLength(5);});
+});

@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Sparkles } from "lucide-react";
-import { ComingSoon } from "@/components/site/ComingSoon";
+import { BuyerTools } from '@/components/account/BuyerTools';
+import { useI18n } from '@/lib/i18n';
+
 
 export const Route = createFileRoute("/recommendations")({
   head: () => ({
@@ -13,7 +14,6 @@ export const Route = createFileRoute("/recommendations")({
       { property: "og:description", content: "Describe your business and current packaging and our AI advisor will suggest the best sustainable alternatives." },
     ],
   }),
-  component: () => (
-    <ComingSoon icon={Sparkles} title={{ en: "AI Recommendations", ar: "التوصيات الذكية" }} text={{ en: "Describe your business and current packaging and our AI advisor will suggest the best sustainable alternatives.", ar: "صف عملك وتغليفك الحالي وسيقترح مستشارنا الذكي أفضل البدائل المستدامة." }} />
-  ),
+  component: ToolPage,
 });
+function ToolPage(){const {t}=useI18n();return <div className="container-page py-12"><h1 className="text-4xl text-forest mb-8">{t.account.tools.advisor}</h1><BuyerTools initial="advisor"/></div>;}
