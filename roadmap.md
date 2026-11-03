@@ -1,4 +1,9 @@
 # GreenSwitch account phase
+- [ ] Supplier product pricing, composition, image/document uploads and non-plastic review
+- [ ] Persistent cart totals and supplier-specific secure purchase requests
+- [ ] Buyer order tracking and supplier fulfillment status updates
+- [ ] Fictional competition fixtures without certificate claims
+- [ ] End-to-end ordering and security regression verification
 - [x] Relational storage, ownership policies, role security, private documents
 - [x] Email registration, login, logout, recovery pages and protected dashboards
 - [x] Buyer accounts, saved products and carts; supplier products, inventory and verification; admin reviews

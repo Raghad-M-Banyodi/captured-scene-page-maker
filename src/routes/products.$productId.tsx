@@ -11,6 +11,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { catalogueOptions } from "@/lib/account/catalogue";
 import { useAccount } from "@/lib/account/session";
 import { supabase } from "@/integrations/supabase/client";
+import { unitPrice, validQuantity } from '@/lib/account/commerce';
 import { ATTRIBUTES, CATEGORIES, MATERIALS, labelOf } from "@/data/products";
 
 export const Route = createFileRoute("/products/$productId")({
@@ -62,7 +63,7 @@ function ProductPage() {
     setBusy(true);
     try {
       if(action==="save") {const r=await supabase.from("saved_products").upsert({user_id:account.user.id,product_id:p.id},{onConflict:"user_id,product_id"});if(r.error)throw r.error;toast.success(t.account.savedNotice);}
-      else {const c=await supabase.from("shopping_carts").upsert({user_id:account.user.id},{onConflict:"user_id"}).select("id").single();if(c.error)throw c.error;const r=await supabase.from("cart_items").upsert({cart_id:c.data.id,product_id:p.id,quantity:qty},{onConflict:"cart_id,product_id"});if(r.error)throw r.error;toast.success(t.account.addedCart);}
+      else {if(!validQuantity(qty,p.moq,p.stock??0)){toast.error(t.account.invalid);return;}const c=await supabase.from("shopping_carts").upsert({user_id:account.user.id},{onConflict:"user_id"}).select("id").single();if(c.error)throw c.error;const r=await supabase.from("cart_items").upsert({cart_id:c.data.id,product_id:p.id,quantity:qty},{onConflict:"cart_id,product_id"});if(r.error)throw r.error;toast.success(t.account.addedCart);}
     }catch(e){toast.error(e instanceof Error?e.message:t.account.error);}finally{setBusy(false);}
   }
   const [qty, setQty] = useState(p.moq);
@@ -85,7 +86,7 @@ function ProductPage() {
       <div className="mt-6 grid gap-10 lg:grid-cols-2">
         <div className="overflow-hidden rounded-[2rem] border border-border bg-muted shadow-soft">
           <img src={p.image} alt={p.name[lang]} width={816} height={816} className="aspect-square w-full object-cover" />
-        </div>
+        {p.images&&p.images.length>1&&<div className="flex gap-2 p-3">{p.images.slice(1).map(url=><a key={url} href={url} target="_blank" rel="noopener noreferrer"><img src={url} alt={p.name[lang]} className="size-20 object-cover rounded-md"/></a>)}</div>}</div>
 
         <div>
           <div className="flex flex-wrap items-center gap-2">
@@ -101,6 +102,7 @@ function ProductPage() {
           </div>
           <p className="mt-1 text-sm text-muted-foreground">{t.detail.minNote} {p.moq.toLocaleString()}</p>
 
+          <p className="mt-2 text-sm">{t.account.commerce.availability}: {p.stock}</p>{p.volumeDiscounts?.map(d=><p key={d.min_quantity} className="text-sm mt-2">{d.min_quantity}+ · {formatILS(d.unit_price,lang)} {p.unit[lang]}</p>)}
           <div className="mt-6 flex flex-wrap gap-2">
             {p.attributes.map((a) => (
               <span key={a} className="inline-flex items-center gap-1.5 rounded-full bg-secondary px-3 py-1 text-sm font-medium text-secondary-foreground"><Leaf className="h-3.5 w-3.5" />{labelOf(ATTRIBUTES, a)?.[lang]}</span>
@@ -112,10 +114,10 @@ function ProductPage() {
             <div className="mt-3 flex flex-wrap items-center gap-3">
               <div className="flex items-center rounded-full border border-input">
                 <Button variant="ghost" size="icon" aria-label="Decrease" onClick={() => setQty((q) => Math.max(p.moq, q - step))}><Minus /></Button>
-                <Input id="qty" type="number" min={p.moq} step={step} value={qty} onChange={(e) => setQty(Math.max(p.moq, Number(e.target.value) || p.moq))} className="h-10 w-24 border-0 text-center shadow-none focus-visible:ring-0" />
-                <Button variant="ghost" size="icon" aria-label="Increase" onClick={() => setQty((q) => q + step)}><Plus /></Button>
+                <Input id="qty" type="number" min={p.moq} max={p.stock} step={1} value={qty} onChange={(e) => setQty(Math.max(p.moq, Number(e.target.value) || p.moq))} className="h-10 w-24 border-0 text-center shadow-none focus-visible:ring-0" />
+                <Button variant="ghost" size="icon" aria-label="Increase" onClick={() => setQty((q) => Math.min(p.stock??q+step,q + step))}><Plus /></Button>
               </div>
-              <span className="text-sm text-muted-foreground">= <strong className="text-forest">{formatILS(qty * p.price, lang)}</strong></span>
+              <span className="text-sm text-muted-foreground">= <strong className="text-forest">{formatILS(qty * unitPrice(p.price,p.volumeDiscounts,qty), lang)}</strong></span>
             </div>
             <div className="mt-5 grid gap-3 sm:grid-cols-2">
               <Button size="lg" disabled={busy} onClick={() => void buyerAction("cart")}><ShoppingCart /> {t.detail.addCart}</Button>
@@ -138,7 +140,7 @@ function ProductPage() {
 
       <div className="mt-14 grid gap-6 md:grid-cols-3">
         <InfoCard title={t.detail.composition}>
-          <p className="font-semibold">{labelOf(MATERIALS, p.material)?.[lang]}</p>
+          <p className="font-semibold">{labelOf(MATERIALS, p.material)?.[lang]}</p><p className="mt-2 text-sm">{p.composition}</p>
           {p.plasticSavedG > 0 && <p className="mt-2 text-sm text-muted-foreground">~{p.plasticSavedG} g {t.detail.savedPer}</p>}
         </InfoCard>
         <InfoCard title={t.detail.specs}>
@@ -149,7 +151,7 @@ function ProductPage() {
           <div className="mt-2 flex flex-wrap gap-2">{p.sizes.map((s) => <span key={s} dir="ltr" className="rounded-full border border-border px-3 py-1 text-sm">{s}</span>)}</div>
         </InfoCard>
         <InfoCard title={t.detail.cert}>
-          <p className={`flex items-center gap-2 font-medium ${certCls}`}><CertIcon className="h-5 w-5" />{certText}</p>
+          <p className={`flex items-center gap-2 font-medium ${certCls}`}><CertIcon className="h-5 w-5" />{certText}</p>{p.documents?.map(d=><a key={d.url} href={d.url} target="_blank" rel="noopener noreferrer" className="block mt-3 text-primary underline">{d.name}</a>)}
         </InfoCard>
       </div>
 

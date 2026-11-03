@@ -18,3 +18,5 @@
 - Maintain one root account session subscriber, with ordered cache teardown before sign-out; this prevents stale protected data.
 - Account dictionaries are composed into useI18n; new account copy belongs in the bilingual account strings module.
 - Development seeding refuses hosted backend URLs and never creates credentials, so demo records cannot enter live account flows.
+- Purchase requests and fulfillment transitions use authenticated RPC wrappers over atomic database functions; prices, stock reservations, ownership and idempotency remain enforced at the database boundary.
+- Product media is stored privately with renewable signed links, and catalogue adapters preserve the existing UI shapes.

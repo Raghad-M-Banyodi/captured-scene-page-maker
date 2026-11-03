@@ -1,0 +1,12 @@
+import {describe,it,expect} from 'vitest';
+import {deliverySchema,productSchema,unitPrice,validQuantity,transitions} from '@/lib/account/commerce';
+const product={name_en:'Paper bag',name_ar:'',description_en:'',description_ar:'',category_slug:'paper-bags',material:'kraft',price:0.9,moq:100,stock:3000,price_unit:'piece',pack_size:1,composition:'100% paper, no plastic coating',non_plastic:true,volume_discounts:[{min_quantity:500,unit_price:0.8},{min_quantity:1000,unit_price:0.7}]};
+describe('Purchase request rules',()=>{
+ it('validates piece and pack pricing',()=>{expect(productSchema.safeParse(product).success).toBe(true);expect(productSchema.safeParse({...product,price_unit:'pack',pack_size:100}).success).toBe(true);expect(productSchema.safeParse({...product,price_unit:'kg'}).success).toBe(false);});
+ it('uses wholesale price at each quantity threshold',()=>{expect(unitPrice(0.9,product.volume_discounts,499)).toBe(0.9);expect(unitPrice(0.9,product.volume_discounts,500)).toBe(0.8);expect(unitPrice(0.9,product.volume_discounts,1000)).toBe(0.7);});
+ it('rejects invalid discount ordering',()=>expect(productSchema.safeParse({...product,volume_discounts:[{min_quantity:1000,unit_price:0.8},{min_quantity:500,unit_price:0.7}]}).success).toBe(false));
+ it('enforces MOQ, stock and integer quantities',()=>{expect(validQuantity(99,100,3000)).toBe(false);expect(validQuantity(100,100,3000)).toBe(true);expect(validQuantity(3001,100,3000)).toBe(false);expect(validQuantity(100.5,100,3000)).toBe(false);});
+ it('excludes PLA and unconfirmed plastic composition',()=>{expect(productSchema.safeParse({...product,material:'pla'}).success).toBe(false);expect(productSchema.safeParse({...product,non_plastic:false}).success).toBe(false);});
+ it('requires delivery information',()=>{expect(deliverySchema.safeParse({name:'Buyer',phone:'0599000000',city:'Nablus',address:'Market street 12'}).success).toBe(true);expect(deliverySchema.safeParse({name:'Buyer',phone:'12',city:'',address:''}).success).toBe(false);});
+ it('allows the seven specified order statuses with terminal states',()=>{expect(Object.keys(transitions).sort()).toEqual(['accepted','cancelled','delivered','pending','processing','rejected','shipped']);expect(transitions['pending']).toEqual(['accepted','rejected']);expect(transitions['accepted']).toContain('processing');expect(transitions['processing']).toEqual(['shipped']);expect(transitions['shipped']).toEqual(['delivered']);expect(transitions['delivered']).toEqual([]);});
+});

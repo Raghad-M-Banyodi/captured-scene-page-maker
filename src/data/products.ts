@@ -68,6 +68,11 @@ export type Product = {
   specs: { label: Bi; value: Bi }[];
   certification: "documented" | "pending" | "none";
   plasticSavedG: number; // illustrative grams of plastic avoided per unit
+  stock?: number;
+  composition?: string;
+  volumeDiscounts?: {min_quantity:number;unit_price:number}[];
+  documents?: {name:string;url:string}[];
+  images?: string[];
 };
 
 export const PRODUCTS: Product[] = [

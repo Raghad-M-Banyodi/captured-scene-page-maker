@@ -259,7 +259,11 @@ export type Database = {
         Row: {
           created_at: string
           id: string
+          name_ar: string
+          name_en: string
           order_id: string
+          pack_size: number
+          price_unit: string
           product_id: string
           quantity: number
           unit_price: number
@@ -267,7 +271,11 @@ export type Database = {
         Insert: {
           created_at?: string
           id?: string
+          name_ar?: string
+          name_en?: string
           order_id: string
+          pack_size?: number
+          price_unit?: string
           product_id: string
           quantity: number
           unit_price: number
@@ -275,7 +283,11 @@ export type Database = {
         Update: {
           created_at?: string
           id?: string
+          name_ar?: string
+          name_en?: string
           order_id?: string
+          pack_size?: number
+          price_unit?: string
           product_id?: string
           quantity?: number
           unit_price?: number
@@ -301,7 +313,10 @@ export type Database = {
         Row: {
           buyer_id: string
           created_at: string
+          delivery: Json
           id: string
+          is_demo: boolean
+          request_key: string | null
           status: string
           supplier_id: string
           total: number
@@ -310,7 +325,10 @@ export type Database = {
         Insert: {
           buyer_id: string
           created_at?: string
+          delivery?: Json
           id?: string
+          is_demo?: boolean
+          request_key?: string | null
           status?: string
           supplier_id: string
           total: number
@@ -319,7 +337,10 @@ export type Database = {
         Update: {
           buyer_id?: string
           created_at?: string
+          delivery?: Json
           id?: string
+          is_demo?: boolean
+          request_key?: string | null
           status?: string
           supplier_id?: string
           total?: number
@@ -366,12 +387,42 @@ export type Database = {
         }
         Relationships: []
       }
+      product_documents: {
+        Row: {
+          file_name: string
+          id: string
+          product_id: string
+          storage_path: string
+        }
+        Insert: {
+          file_name: string
+          id?: string
+          product_id: string
+          storage_path: string
+        }
+        Update: {
+          file_name?: string
+          id?: string
+          product_id?: string
+          storage_path?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_documents_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       product_images: {
         Row: {
           created_at: string
           id: string
           position: number
           product_id: string
+          storage_path: string | null
           url: string
         }
         Insert: {
@@ -379,6 +430,7 @@ export type Database = {
           id?: string
           position?: number
           product_id: string
+          storage_path?: string | null
           url: string
         }
         Update: {
@@ -386,6 +438,7 @@ export type Database = {
           id?: string
           position?: number
           product_id?: string
+          storage_path?: string | null
           url?: string
         }
         Relationships: [
@@ -431,6 +484,7 @@ export type Database = {
         Row: {
           category_id: string | null
           category_slug: string
+          composition: string
           created_at: string
           description_ar: string
           description_en: string
@@ -440,17 +494,22 @@ export type Database = {
           moq: number
           name_ar: string
           name_en: string
+          non_plastic: boolean
+          pack_size: number
           price: number
+          price_unit: string
           sizes: string[]
           specs: Json
           status: string
           stock: number
           supplier_id: string
           updated_at: string
+          volume_discounts: Json
         }
         Insert: {
           category_id?: string | null
           category_slug?: string
+          composition?: string
           created_at?: string
           description_ar?: string
           description_en?: string
@@ -460,17 +519,22 @@ export type Database = {
           moq?: number
           name_ar?: string
           name_en: string
+          non_plastic?: boolean
+          pack_size?: number
           price: number
+          price_unit?: string
           sizes?: string[]
           specs?: Json
           status?: string
           stock?: number
           supplier_id: string
           updated_at?: string
+          volume_discounts?: Json
         }
         Update: {
           category_id?: string | null
           category_slug?: string
+          composition?: string
           created_at?: string
           description_ar?: string
           description_en?: string
@@ -480,13 +544,17 @@ export type Database = {
           moq?: number
           name_ar?: string
           name_en?: string
+          non_plastic?: boolean
+          pack_size?: number
           price?: number
+          price_unit?: string
           sizes?: string[]
           specs?: Json
           status?: string
           stock?: number
           supplier_id?: string
           updated_at?: string
+          volume_discounts?: Json
         }
         Relationships: [
           {
@@ -746,6 +814,10 @@ export type Database = {
         Args: { decision: string; supplier: string }
         Returns: undefined
       }
+      change_order_status: {
+        Args: { next_status: string; order_id: string }
+        Returns: undefined
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -753,8 +825,16 @@ export type Database = {
         }
         Returns: boolean
       }
+      market_unit_price: {
+        Args: { base: number; qty: number; tiers: Json }
+        Returns: number
+      }
       owns_supplier: { Args: { sid: string }; Returns: boolean }
       public_product: { Args: { pid: string }; Returns: boolean }
+      request_cart_order: {
+        Args: { address: Json; request_id: string }
+        Returns: string[]
+      }
     }
     Enums: {
       app_role: "buyer" | "supplier" | "admin"
