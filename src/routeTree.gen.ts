@@ -16,6 +16,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as CalculatorRouteImport } from './routes/calculator'
 import { Route as CartRouteImport } from './routes/cart'
 import { Route as ContactRouteImport } from './routes/contact'
+import { Route as DevelopmentDemoRouteImport } from './routes/development-demo'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as GroupBuyingRouteImport } from './routes/group-buying'
 import { Route as HowItWorksRouteImport } from './routes/how-it-works'
@@ -66,6 +67,11 @@ const CartRoute = CartRouteImport.update({
 const ContactRoute = ContactRouteImport.update({
   id: '/contact',
   path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DevelopmentDemoRoute = DevelopmentDemoRouteImport.update({
+  id: '/development-demo',
+  path: '/development-demo',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
@@ -164,6 +170,7 @@ export interface FileRoutesByFullPath {
   '/calculator': typeof CalculatorRoute
   '/cart': typeof CartRoute
   '/contact': typeof ContactRoute
+  '/development-demo': typeof DevelopmentDemoRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/group-buying': typeof GroupBuyingRoute
   '/how-it-works': typeof HowItWorksRoute
@@ -189,6 +196,7 @@ export interface FileRoutesByTo {
   '/calculator': typeof CalculatorRoute
   '/cart': typeof CartRoute
   '/contact': typeof ContactRoute
+  '/development-demo': typeof DevelopmentDemoRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/group-buying': typeof GroupBuyingRoute
   '/how-it-works': typeof HowItWorksRoute
@@ -216,6 +224,7 @@ export interface FileRoutesById {
   '/calculator': typeof CalculatorRoute
   '/cart': typeof CartRoute
   '/contact': typeof ContactRoute
+  '/development-demo': typeof DevelopmentDemoRoute
   '/forgot-password': typeof ForgotPasswordRoute
   '/group-buying': typeof GroupBuyingRoute
   '/how-it-works': typeof HowItWorksRoute
@@ -243,6 +252,7 @@ export interface FileRouteTypes {
     | '/calculator'
     | '/cart'
     | '/contact'
+    | '/development-demo'
     | '/forgot-password'
     | '/group-buying'
     | '/how-it-works'
@@ -268,6 +278,7 @@ export interface FileRouteTypes {
     | '/calculator'
     | '/cart'
     | '/contact'
+    | '/development-demo'
     | '/forgot-password'
     | '/group-buying'
     | '/how-it-works'
@@ -294,6 +305,7 @@ export interface FileRouteTypes {
     | '/calculator'
     | '/cart'
     | '/contact'
+    | '/development-demo'
     | '/forgot-password'
     | '/group-buying'
     | '/how-it-works'
@@ -321,6 +333,7 @@ export interface RootRouteChildren {
   CalculatorRoute: typeof CalculatorRoute
   CartRoute: typeof CartRoute
   ContactRoute: typeof ContactRoute
+  DevelopmentDemoRoute: typeof DevelopmentDemoRoute
   ForgotPasswordRoute: typeof ForgotPasswordRoute
   GroupBuyingRoute: typeof GroupBuyingRoute
   HowItWorksRoute: typeof HowItWorksRoute
@@ -386,6 +399,13 @@ declare module '@tanstack/react-router' {
       path: '/contact'
       fullPath: '/contact'
       preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/development-demo': {
+      id: '/development-demo'
+      path: '/development-demo'
+      fullPath: '/development-demo'
+      preLoaderRoute: typeof DevelopmentDemoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/forgot-password': {
@@ -533,6 +553,7 @@ const rootRouteChildren: RootRouteChildren = {
   CalculatorRoute: CalculatorRoute,
   CartRoute: CartRoute,
   ContactRoute: ContactRoute,
+  DevelopmentDemoRoute: DevelopmentDemoRoute,
   ForgotPasswordRoute: ForgotPasswordRoute,
   GroupBuyingRoute: GroupBuyingRoute,
   HowItWorksRoute: HowItWorksRoute,
