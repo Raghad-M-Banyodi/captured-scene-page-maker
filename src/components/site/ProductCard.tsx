@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { BadgeCheck, ArrowUpRight } from "lucide-react";
 import { formatILS, useI18n } from "@/lib/i18n";
-import { MATERIALS, getSupplier, labelOf, type Product } from "@/data/products";
+import { MATERIALS, getSupplier, labelOf, type Product, type Supplier } from "@/data/products";
 
 export function DemoBadge() {
   const { t } = useI18n();
@@ -12,9 +12,9 @@ export function DemoBadge() {
   );
 }
 
-export function ProductCard({ product }: { product: Product }) {
+export function ProductCard({ product, supplier: providedSupplier }: { product: Product; supplier?: Supplier | undefined }) {
   const { lang, t } = useI18n();
-  const supplier = getSupplier(product.supplierId);
+  const supplier = providedSupplier ?? getSupplier(product.supplierId);
   const material = labelOf(MATERIALS, product.material);
 
   return (

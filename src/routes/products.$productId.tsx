@@ -1,17 +1,22 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useState } from "react";
-import { ArrowLeft, BadgeCheck, FileCheck2, FileClock, FileX2, Minus, Plus, ShoppingCart, Scale, MapPin, Leaf } from "lucide-react";
+import { ArrowLeft, BadgeCheck, FileCheck2, FileClock, FileX2, Minus, Plus, ShoppingCart, Heart, Scale, MapPin, Leaf } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ProductCard, DemoBadge } from "@/components/site/ProductCard";
+import { ProductCard } from "@/components/site/ProductCard";
 import { formatILS, useI18n } from "@/lib/i18n";
-import { ATTRIBUTES, CATEGORIES, MATERIALS, PRODUCTS, getProduct, getSupplier, labelOf } from "@/data/products";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { catalogueOptions } from "@/lib/account/catalogue";
+import { useAccount } from "@/lib/account/session";
+import { supabase } from "@/integrations/supabase/client";
+import { ATTRIBUTES, CATEGORIES, MATERIALS, labelOf } from "@/data/products";
 
 export const Route = createFileRoute("/products/$productId")({
-  loader: ({ params }) => {
-    const product = getProduct(params.productId);
+  loader: async ({ params,context }) => {
+    const data=await context.queryClient.ensureQueryData(catalogueOptions);
+    const product = data.products.find(p=>p.id===params.productId);
     if (!product) throw notFound();
     return { product };
   },
@@ -45,7 +50,18 @@ function NotFoundProduct() {
 function ProductPage() {
   const { product: p } = Route.useLoaderData();
   const { t, lang } = useI18n();
-  const supplier = getSupplier(p.supplierId);
+  const {data:{products:PRODUCTS,suppliers}}=useSuspenseQuery(catalogueOptions);
+  const supplier = suppliers.find(s=>s.id===p.supplierId);
+  const account=useAccount();
+  const [busy,setBusy]=useState(false);
+  async function buyerAction(action:"save"|"cart") {
+    if(!account.user||!account.roles.includes("buyer")){toast(t.account.signInRequired);return;}
+    setBusy(true);
+    try {
+      if(action==="save") {const r=await supabase.from("saved_products").upsert({user_id:account.user.id,product_id:p.id},{onConflict:"user_id,product_id"});if(r.error)throw r.error;toast.success(t.account.savedNotice);}
+      else {const c=await supabase.from("shopping_carts").upsert({user_id:account.user.id},{onConflict:"user_id"}).select("id").single();if(c.error)throw c.error;const r=await supabase.from("cart_items").upsert({cart_id:c.data.id,product_id:p.id,quantity:qty},{onConflict:"cart_id,product_id"});if(r.error)throw r.error;toast.success(t.account.addedCart);}
+    }catch(e){toast.error(e instanceof Error?e.message:t.account.error);}finally{setBusy(false);}
+  }
   const [qty, setQty] = useState(p.moq);
   const related = PRODUCTS.filter((x) => x.id !== p.id && (x.category === p.category || x.material === p.material)).slice(0, 4);
   const fallback = related.length ? related : PRODUCTS.filter((x) => x.id !== p.id).slice(0, 4);
@@ -71,7 +87,7 @@ function ProductPage() {
         <div>
           <div className="flex flex-wrap items-center gap-2">
             <span className="eyebrow">{labelOf(CATEGORIES, p.category)?.[lang]}</span>
-            <DemoBadge />
+
           </div>
           <h1 className="mt-3 text-4xl font-semibold leading-tight text-forest md:text-5xl">{p.name[lang]}</h1>
           <p className="mt-4 text-lg text-muted-foreground">{p.description[lang]}</p>
@@ -99,8 +115,8 @@ function ProductPage() {
               <span className="text-sm text-muted-foreground">= <strong className="text-forest">{formatILS(qty * p.price, lang)}</strong></span>
             </div>
             <div className="mt-5 grid gap-3 sm:grid-cols-2">
-              <Button size="lg" onClick={() => toast(t.comingSoon, { description: t.detail.placeholderCart })}><ShoppingCart /> {t.detail.addCart}</Button>
-              <Button size="lg" variant="outline" onClick={() => toast(t.comingSoon, { description: t.detail.placeholderCompare })}><Scale /> {t.detail.compare}</Button>
+              <Button size="lg" disabled={busy} onClick={() => void buyerAction("cart")}><ShoppingCart /> {t.detail.addCart}</Button>
+              <Button size="lg" variant="outline" disabled={busy} onClick={() => void buyerAction("save")}><Heart /> {t.account.saveProduct}</Button>
             </div>
           </div>
 
@@ -136,7 +152,7 @@ function ProductPage() {
 
       <section className="mt-20">
         <h2 className="text-3xl font-semibold text-forest">{t.detail.related}</h2>
-        <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">{fallback.map((r) => <ProductCard key={r.id} product={r} />)}</div>
+        <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">{fallback.map((r) => <ProductCard key={r.id} product={r} supplier={suppliers.find(s=>s.id===r.supplierId)} />)}</div>
       </section>
     </div>
   );

@@ -10,10 +10,13 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AboutRouteImport } from './routes/about'
+import { Route as AuthRouteImport } from './routes/auth'
 import { Route as CalculatorRouteImport } from './routes/calculator'
 import { Route as CartRouteImport } from './routes/cart'
 import { Route as ContactRouteImport } from './routes/contact'
+import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as GroupBuyingRouteImport } from './routes/group-buying'
 import { Route as HowItWorksRouteImport } from './routes/how-it-works'
 import { Route as ImpactRouteImport } from './routes/impact'
@@ -22,22 +25,32 @@ import { Route as MarketplaceRouteImport } from './routes/marketplace'
 import { Route as OrdersRouteImport } from './routes/orders'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as RecommendationsRouteImport } from './routes/recommendations'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as SuppliersRouteImport } from './routes/suppliers'
 import { Route as TermsRouteImport } from './routes/terms'
-import { Route as DashboardAdminRouteImport } from './routes/dashboard.admin'
-import { Route as DashboardBuyerRouteImport } from './routes/dashboard.buyer'
-import { Route as DashboardSupplierRouteImport } from './routes/dashboard.supplier'
 import { Route as ProductsProductIdRouteImport } from './routes/products.$productId'
+import { Route as AuthenticatedDashboardAdminRouteImport } from './routes/_authenticated/dashboard.admin'
+import { Route as AuthenticatedDashboardBuyerRouteImport } from './routes/_authenticated/dashboard.buyer'
+import { Route as AuthenticatedDashboardSupplierRouteImport } from './routes/_authenticated/dashboard.supplier'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CalculatorRoute = CalculatorRouteImport.update({
@@ -53,6 +66,11 @@ const CartRoute = CartRouteImport.update({
 const ContactRoute = ContactRouteImport.update({
   id: '/contact',
   path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
+  id: '/forgot-password',
+  path: '/forgot-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const GroupBuyingRoute = GroupBuyingRouteImport.update({
@@ -95,6 +113,11 @@ const RecommendationsRoute = RecommendationsRouteImport.update({
   path: '/recommendations',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
   path: '/signup',
@@ -110,33 +133,38 @@ const TermsRoute = TermsRouteImport.update({
   path: '/terms',
   getParentRoute: () => rootRouteImport,
 } as any)
-const DashboardAdminRoute = DashboardAdminRouteImport.update({
-  id: '/dashboard/admin',
-  path: '/dashboard/admin',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DashboardBuyerRoute = DashboardBuyerRouteImport.update({
-  id: '/dashboard/buyer',
-  path: '/dashboard/buyer',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DashboardSupplierRoute = DashboardSupplierRouteImport.update({
-  id: '/dashboard/supplier',
-  path: '/dashboard/supplier',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ProductsProductIdRoute = ProductsProductIdRouteImport.update({
   id: '/products/$productId',
   path: '/products/$productId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedDashboardAdminRoute =
+  AuthenticatedDashboardAdminRouteImport.update({
+    id: '/dashboard/admin',
+    path: '/dashboard/admin',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedDashboardBuyerRoute =
+  AuthenticatedDashboardBuyerRouteImport.update({
+    id: '/dashboard/buyer',
+    path: '/dashboard/buyer',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedDashboardSupplierRoute =
+  AuthenticatedDashboardSupplierRouteImport.update({
+    id: '/dashboard/supplier',
+    path: '/dashboard/supplier',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/auth': typeof AuthRoute
   '/calculator': typeof CalculatorRoute
   '/cart': typeof CartRoute
   '/contact': typeof ContactRoute
+  '/forgot-password': typeof ForgotPasswordRoute
   '/group-buying': typeof GroupBuyingRoute
   '/how-it-works': typeof HowItWorksRoute
   '/impact': typeof ImpactRoute
@@ -145,20 +173,23 @@ export interface FileRoutesByFullPath {
   '/orders': typeof OrdersRoute
   '/privacy': typeof PrivacyRoute
   '/recommendations': typeof RecommendationsRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
   '/suppliers': typeof SuppliersRoute
   '/terms': typeof TermsRoute
-  '/dashboard/admin': typeof DashboardAdminRoute
-  '/dashboard/buyer': typeof DashboardBuyerRoute
-  '/dashboard/supplier': typeof DashboardSupplierRoute
   '/products/$productId': typeof ProductsProductIdRoute
+  '/dashboard/admin': typeof AuthenticatedDashboardAdminRoute
+  '/dashboard/buyer': typeof AuthenticatedDashboardBuyerRoute
+  '/dashboard/supplier': typeof AuthenticatedDashboardSupplierRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/auth': typeof AuthRoute
   '/calculator': typeof CalculatorRoute
   '/cart': typeof CartRoute
   '/contact': typeof ContactRoute
+  '/forgot-password': typeof ForgotPasswordRoute
   '/group-buying': typeof GroupBuyingRoute
   '/how-it-works': typeof HowItWorksRoute
   '/impact': typeof ImpactRoute
@@ -167,21 +198,25 @@ export interface FileRoutesByTo {
   '/orders': typeof OrdersRoute
   '/privacy': typeof PrivacyRoute
   '/recommendations': typeof RecommendationsRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
   '/suppliers': typeof SuppliersRoute
   '/terms': typeof TermsRoute
-  '/dashboard/admin': typeof DashboardAdminRoute
-  '/dashboard/buyer': typeof DashboardBuyerRoute
-  '/dashboard/supplier': typeof DashboardSupplierRoute
   '/products/$productId': typeof ProductsProductIdRoute
+  '/dashboard/admin': typeof AuthenticatedDashboardAdminRoute
+  '/dashboard/buyer': typeof AuthenticatedDashboardBuyerRoute
+  '/dashboard/supplier': typeof AuthenticatedDashboardSupplierRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/about': typeof AboutRoute
+  '/auth': typeof AuthRoute
   '/calculator': typeof CalculatorRoute
   '/cart': typeof CartRoute
   '/contact': typeof ContactRoute
+  '/forgot-password': typeof ForgotPasswordRoute
   '/group-buying': typeof GroupBuyingRoute
   '/how-it-works': typeof HowItWorksRoute
   '/impact': typeof ImpactRoute
@@ -190,22 +225,25 @@ export interface FileRoutesById {
   '/orders': typeof OrdersRoute
   '/privacy': typeof PrivacyRoute
   '/recommendations': typeof RecommendationsRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
   '/suppliers': typeof SuppliersRoute
   '/terms': typeof TermsRoute
-  '/dashboard/admin': typeof DashboardAdminRoute
-  '/dashboard/buyer': typeof DashboardBuyerRoute
-  '/dashboard/supplier': typeof DashboardSupplierRoute
   '/products/$productId': typeof ProductsProductIdRoute
+  '/_authenticated/dashboard/admin': typeof AuthenticatedDashboardAdminRoute
+  '/_authenticated/dashboard/buyer': typeof AuthenticatedDashboardBuyerRoute
+  '/_authenticated/dashboard/supplier': typeof AuthenticatedDashboardSupplierRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/about'
+    | '/auth'
     | '/calculator'
     | '/cart'
     | '/contact'
+    | '/forgot-password'
     | '/group-buying'
     | '/how-it-works'
     | '/impact'
@@ -214,20 +252,23 @@ export interface FileRouteTypes {
     | '/orders'
     | '/privacy'
     | '/recommendations'
+    | '/reset-password'
     | '/signup'
     | '/suppliers'
     | '/terms'
+    | '/products/$productId'
     | '/dashboard/admin'
     | '/dashboard/buyer'
     | '/dashboard/supplier'
-    | '/products/$productId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/about'
+    | '/auth'
     | '/calculator'
     | '/cart'
     | '/contact'
+    | '/forgot-password'
     | '/group-buying'
     | '/how-it-works'
     | '/impact'
@@ -236,20 +277,24 @@ export interface FileRouteTypes {
     | '/orders'
     | '/privacy'
     | '/recommendations'
+    | '/reset-password'
     | '/signup'
     | '/suppliers'
     | '/terms'
+    | '/products/$productId'
     | '/dashboard/admin'
     | '/dashboard/buyer'
     | '/dashboard/supplier'
-    | '/products/$productId'
   id:
     | '__root__'
     | '/'
+    | '/_authenticated'
     | '/about'
+    | '/auth'
     | '/calculator'
     | '/cart'
     | '/contact'
+    | '/forgot-password'
     | '/group-buying'
     | '/how-it-works'
     | '/impact'
@@ -258,21 +303,25 @@ export interface FileRouteTypes {
     | '/orders'
     | '/privacy'
     | '/recommendations'
+    | '/reset-password'
     | '/signup'
     | '/suppliers'
     | '/terms'
-    | '/dashboard/admin'
-    | '/dashboard/buyer'
-    | '/dashboard/supplier'
     | '/products/$productId'
+    | '/_authenticated/dashboard/admin'
+    | '/_authenticated/dashboard/buyer'
+    | '/_authenticated/dashboard/supplier'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AboutRoute: typeof AboutRoute
+  AuthRoute: typeof AuthRoute
   CalculatorRoute: typeof CalculatorRoute
   CartRoute: typeof CartRoute
   ContactRoute: typeof ContactRoute
+  ForgotPasswordRoute: typeof ForgotPasswordRoute
   GroupBuyingRoute: typeof GroupBuyingRoute
   HowItWorksRoute: typeof HowItWorksRoute
   ImpactRoute: typeof ImpactRoute
@@ -281,12 +330,10 @@ export interface RootRouteChildren {
   OrdersRoute: typeof OrdersRoute
   PrivacyRoute: typeof PrivacyRoute
   RecommendationsRoute: typeof RecommendationsRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
   SignupRoute: typeof SignupRoute
   SuppliersRoute: typeof SuppliersRoute
   TermsRoute: typeof TermsRoute
-  DashboardAdminRoute: typeof DashboardAdminRoute
-  DashboardBuyerRoute: typeof DashboardBuyerRoute
-  DashboardSupplierRoute: typeof DashboardSupplierRoute
   ProductsProductIdRoute: typeof ProductsProductIdRoute
 }
 
@@ -299,11 +346,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/about': {
       id: '/about'
       path: '/about'
       fullPath: '/about'
       preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/calculator': {
@@ -325,6 +386,13 @@ declare module '@tanstack/react-router' {
       path: '/contact'
       fullPath: '/contact'
       preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/forgot-password': {
+      id: '/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/forgot-password'
+      preLoaderRoute: typeof ForgotPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/group-buying': {
@@ -383,6 +451,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RecommendationsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/signup': {
       id: '/signup'
       path: '/signup'
@@ -404,27 +479,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TermsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/dashboard/admin': {
-      id: '/dashboard/admin'
-      path: '/dashboard/admin'
-      fullPath: '/dashboard/admin'
-      preLoaderRoute: typeof DashboardAdminRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/dashboard/buyer': {
-      id: '/dashboard/buyer'
-      path: '/dashboard/buyer'
-      fullPath: '/dashboard/buyer'
-      preLoaderRoute: typeof DashboardBuyerRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/dashboard/supplier': {
-      id: '/dashboard/supplier'
-      path: '/dashboard/supplier'
-      fullPath: '/dashboard/supplier'
-      preLoaderRoute: typeof DashboardSupplierRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/products/$productId': {
       id: '/products/$productId'
       path: '/products/$productId'
@@ -432,15 +486,54 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProductsProductIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/dashboard/admin': {
+      id: '/_authenticated/dashboard/admin'
+      path: '/dashboard/admin'
+      fullPath: '/dashboard/admin'
+      preLoaderRoute: typeof AuthenticatedDashboardAdminRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/dashboard/buyer': {
+      id: '/_authenticated/dashboard/buyer'
+      path: '/dashboard/buyer'
+      fullPath: '/dashboard/buyer'
+      preLoaderRoute: typeof AuthenticatedDashboardBuyerRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/dashboard/supplier': {
+      id: '/_authenticated/dashboard/supplier'
+      path: '/dashboard/supplier'
+      fullPath: '/dashboard/supplier'
+      preLoaderRoute: typeof AuthenticatedDashboardSupplierRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedDashboardAdminRoute: typeof AuthenticatedDashboardAdminRoute
+  AuthenticatedDashboardBuyerRoute: typeof AuthenticatedDashboardBuyerRoute
+  AuthenticatedDashboardSupplierRoute: typeof AuthenticatedDashboardSupplierRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedDashboardAdminRoute: AuthenticatedDashboardAdminRoute,
+  AuthenticatedDashboardBuyerRoute: AuthenticatedDashboardBuyerRoute,
+  AuthenticatedDashboardSupplierRoute: AuthenticatedDashboardSupplierRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AboutRoute: AboutRoute,
+  AuthRoute: AuthRoute,
   CalculatorRoute: CalculatorRoute,
   CartRoute: CartRoute,
   ContactRoute: ContactRoute,
+  ForgotPasswordRoute: ForgotPasswordRoute,
   GroupBuyingRoute: GroupBuyingRoute,
   HowItWorksRoute: HowItWorksRoute,
   ImpactRoute: ImpactRoute,
@@ -449,12 +542,10 @@ const rootRouteChildren: RootRouteChildren = {
   OrdersRoute: OrdersRoute,
   PrivacyRoute: PrivacyRoute,
   RecommendationsRoute: RecommendationsRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
   SignupRoute: SignupRoute,
   SuppliersRoute: SuppliersRoute,
   TermsRoute: TermsRoute,
-  DashboardAdminRoute: DashboardAdminRoute,
-  DashboardBuyerRoute: DashboardBuyerRoute,
-  DashboardSupplierRoute: DashboardSupplierRoute,
   ProductsProductIdRoute: ProductsProductIdRoute,
 }
 export const routeTree = rootRouteImport

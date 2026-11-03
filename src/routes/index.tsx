@@ -4,10 +4,13 @@ import { Button } from "@/components/ui/button";
 import { ProductCard, DemoBadge } from "@/components/site/ProductCard";
 import { SectionHeading } from "@/components/site/PageHeader";
 import { useI18n, formatILS } from "@/lib/i18n";
-import { PRODUCTS, CATEGORIES } from "@/data/products";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { catalogueOptions } from "@/lib/account/catalogue";
+import { CATEGORIES } from "@/data/products";
 import hero from "@/assets/hero.jpg";
 
 export const Route = createFileRoute("/")({
+  loader:({context})=>context.queryClient.ensureQueryData(catalogueOptions),
   head: () => ({
     meta: [
       { title: "GreenSwitch — Smarter Packaging. Greener Business." },
@@ -21,6 +24,7 @@ export const Route = createFileRoute("/")({
 
 function Home() {
   const { t, lang } = useI18n();
+  const {data:{products:PRODUCTS,suppliers}}=useSuspenseQuery(catalogueOptions);
   const steps = [
     { icon: Building2, t: t.how.s1, d: t.how.s1t },
     { icon: Search, t: t.how.s2, d: t.how.s2t },
@@ -51,7 +55,7 @@ function Home() {
               </Button>
             </div>
             <dl className="mt-12 grid max-w-md grid-cols-3 gap-6 border-t border-forest-foreground/15 pt-6">
-              {[[String(CATEGORIES.length), t.hero.stat1], ["4", t.hero.stat2], ["₪", t.hero.stat3]].map(([v, l]) => (
+              {[[String(CATEGORIES.length), t.hero.stat1], [String(suppliers.length), t.account.suppliers], ["₪", t.hero.stat3]].map(([v, l]) => (
                 <div key={l}>
                   <dt className="sr-only">{l}</dt>
                   <dd className="font-display text-3xl text-lime">{v}</dd>
@@ -115,12 +119,12 @@ function Home() {
         <div className="flex flex-wrap items-end justify-between gap-6">
           <div>
             <SectionHeading eyebrow={t.featured.eyebrow} title={t.featured.title} />
-            <div className="mt-4"><DemoBadge /></div>
+
           </div>
           <Button variant="outline" asChild><Link to="/marketplace">{t.featured.all} <ArrowRight className="rtl:-scale-x-100" /></Link></Button>
         </div>
         <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {PRODUCTS.slice(0, 4).map((p) => <ProductCard key={p.id} product={p} />)}
+          {PRODUCTS.slice(0, 4).map((p) => <ProductCard key={p.id} product={p} supplier={suppliers.find(s=>s.id===p.supplierId)} />)}
         </div>
       </section>
 
