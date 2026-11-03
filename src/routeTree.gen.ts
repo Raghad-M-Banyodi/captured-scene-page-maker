@@ -30,6 +30,7 @@ import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as SuppliersRouteImport } from './routes/suppliers'
 import { Route as TermsRouteImport } from './routes/terms'
+import { Route as GroupBuyingCampaignIdRouteImport } from './routes/group-buying.$campaignId'
 import { Route as ProductsProductIdRouteImport } from './routes/products.$productId'
 import { Route as AuthenticatedDashboardAdminRouteImport } from './routes/_authenticated/dashboard.admin'
 import { Route as AuthenticatedDashboardBuyerRouteImport } from './routes/_authenticated/dashboard.buyer'
@@ -139,6 +140,11 @@ const TermsRoute = TermsRouteImport.update({
   path: '/terms',
   getParentRoute: () => rootRouteImport,
 } as any)
+const GroupBuyingCampaignIdRoute = GroupBuyingCampaignIdRouteImport.update({
+  id: '/$campaignId',
+  path: '/$campaignId',
+  getParentRoute: () => GroupBuyingRoute,
+} as any)
 const ProductsProductIdRoute = ProductsProductIdRouteImport.update({
   id: '/products/$productId',
   path: '/products/$productId',
@@ -172,7 +178,7 @@ export interface FileRoutesByFullPath {
   '/contact': typeof ContactRoute
   '/development-demo': typeof DevelopmentDemoRoute
   '/forgot-password': typeof ForgotPasswordRoute
-  '/group-buying': typeof GroupBuyingRoute
+  '/group-buying': typeof GroupBuyingRouteWithChildren
   '/how-it-works': typeof HowItWorksRoute
   '/impact': typeof ImpactRoute
   '/login': typeof LoginRoute
@@ -184,6 +190,7 @@ export interface FileRoutesByFullPath {
   '/signup': typeof SignupRoute
   '/suppliers': typeof SuppliersRoute
   '/terms': typeof TermsRoute
+  '/group-buying/$campaignId': typeof GroupBuyingCampaignIdRoute
   '/products/$productId': typeof ProductsProductIdRoute
   '/dashboard/admin': typeof AuthenticatedDashboardAdminRoute
   '/dashboard/buyer': typeof AuthenticatedDashboardBuyerRoute
@@ -198,7 +205,7 @@ export interface FileRoutesByTo {
   '/contact': typeof ContactRoute
   '/development-demo': typeof DevelopmentDemoRoute
   '/forgot-password': typeof ForgotPasswordRoute
-  '/group-buying': typeof GroupBuyingRoute
+  '/group-buying': typeof GroupBuyingRouteWithChildren
   '/how-it-works': typeof HowItWorksRoute
   '/impact': typeof ImpactRoute
   '/login': typeof LoginRoute
@@ -210,6 +217,7 @@ export interface FileRoutesByTo {
   '/signup': typeof SignupRoute
   '/suppliers': typeof SuppliersRoute
   '/terms': typeof TermsRoute
+  '/group-buying/$campaignId': typeof GroupBuyingCampaignIdRoute
   '/products/$productId': typeof ProductsProductIdRoute
   '/dashboard/admin': typeof AuthenticatedDashboardAdminRoute
   '/dashboard/buyer': typeof AuthenticatedDashboardBuyerRoute
@@ -226,7 +234,7 @@ export interface FileRoutesById {
   '/contact': typeof ContactRoute
   '/development-demo': typeof DevelopmentDemoRoute
   '/forgot-password': typeof ForgotPasswordRoute
-  '/group-buying': typeof GroupBuyingRoute
+  '/group-buying': typeof GroupBuyingRouteWithChildren
   '/how-it-works': typeof HowItWorksRoute
   '/impact': typeof ImpactRoute
   '/login': typeof LoginRoute
@@ -238,6 +246,7 @@ export interface FileRoutesById {
   '/signup': typeof SignupRoute
   '/suppliers': typeof SuppliersRoute
   '/terms': typeof TermsRoute
+  '/group-buying/$campaignId': typeof GroupBuyingCampaignIdRoute
   '/products/$productId': typeof ProductsProductIdRoute
   '/_authenticated/dashboard/admin': typeof AuthenticatedDashboardAdminRoute
   '/_authenticated/dashboard/buyer': typeof AuthenticatedDashboardBuyerRoute
@@ -266,6 +275,7 @@ export interface FileRouteTypes {
     | '/signup'
     | '/suppliers'
     | '/terms'
+    | '/group-buying/$campaignId'
     | '/products/$productId'
     | '/dashboard/admin'
     | '/dashboard/buyer'
@@ -292,6 +302,7 @@ export interface FileRouteTypes {
     | '/signup'
     | '/suppliers'
     | '/terms'
+    | '/group-buying/$campaignId'
     | '/products/$productId'
     | '/dashboard/admin'
     | '/dashboard/buyer'
@@ -319,6 +330,7 @@ export interface FileRouteTypes {
     | '/signup'
     | '/suppliers'
     | '/terms'
+    | '/group-buying/$campaignId'
     | '/products/$productId'
     | '/_authenticated/dashboard/admin'
     | '/_authenticated/dashboard/buyer'
@@ -335,7 +347,7 @@ export interface RootRouteChildren {
   ContactRoute: typeof ContactRoute
   DevelopmentDemoRoute: typeof DevelopmentDemoRoute
   ForgotPasswordRoute: typeof ForgotPasswordRoute
-  GroupBuyingRoute: typeof GroupBuyingRoute
+  GroupBuyingRoute: typeof GroupBuyingRouteWithChildren
   HowItWorksRoute: typeof HowItWorksRoute
   ImpactRoute: typeof ImpactRoute
   LoginRoute: typeof LoginRoute
@@ -499,6 +511,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TermsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/group-buying/$campaignId': {
+      id: '/group-buying/$campaignId'
+      path: '/$campaignId'
+      fullPath: '/group-buying/$campaignId'
+      preLoaderRoute: typeof GroupBuyingCampaignIdRouteImport
+      parentRoute: typeof GroupBuyingRoute
+    }
     '/products/$productId': {
       id: '/products/$productId'
       path: '/products/$productId'
@@ -545,6 +564,18 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
 const AuthenticatedRouteRouteWithChildren =
   AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
+interface GroupBuyingRouteChildren {
+  GroupBuyingCampaignIdRoute: typeof GroupBuyingCampaignIdRoute
+}
+
+const GroupBuyingRouteChildren: GroupBuyingRouteChildren = {
+  GroupBuyingCampaignIdRoute: GroupBuyingCampaignIdRoute,
+}
+
+const GroupBuyingRouteWithChildren = GroupBuyingRoute._addFileChildren(
+  GroupBuyingRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
@@ -555,7 +586,7 @@ const rootRouteChildren: RootRouteChildren = {
   ContactRoute: ContactRoute,
   DevelopmentDemoRoute: DevelopmentDemoRoute,
   ForgotPasswordRoute: ForgotPasswordRoute,
-  GroupBuyingRoute: GroupBuyingRoute,
+  GroupBuyingRoute: GroupBuyingRouteWithChildren,
   HowItWorksRoute: HowItWorksRoute,
   ImpactRoute: ImpactRoute,
   LoginRoute: LoginRoute,
