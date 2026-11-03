@@ -40,6 +40,9 @@ def signup(role):
 
 admin = signup('buyer')
 sql(f"INSERT INTO user_roles(user_id,role) VALUES('{admin}','admin')")
+assert value("SELECT has_function_privilege('anon','public.recycling_rankings(date)','EXECUTE'),has_function_privilege('authenticated','public.recycling_rankings(date)','EXECUTE')") == 'f|f'
+assert sql("SET ROLE anon; SELECT recycling_rankings(date_trunc('month',now())::date)",False).returncode
+assert as_user(admin,"SELECT recycling_rankings(date_trunc('month',now())::date)",False).returncode
 supplier = signup('supplier')
 buyers = [signup('buyer') for _ in range(5)]
 buyer = buyers[0]
