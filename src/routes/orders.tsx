@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Package } from "lucide-react";
-import { ComingSoon } from "@/components/site/ComingSoon";
+import { Orders } from '@/components/account/Orders';
+import { useI18n } from '@/lib/i18n';
 
 export const Route = createFileRoute("/orders")({
   head: () => ({
@@ -13,7 +13,6 @@ export const Route = createFileRoute("/orders")({
       { property: "og:description", content: "View and track your orders and group purchases here." },
     ],
   }),
-  component: () => (
-    <ComingSoon icon={Package} title={{ en: "Orders", ar: "الطلبات" }} text={{ en: "View and track your orders and group purchases here.", ar: "اعرض طلباتك ومشترياتك الجماعية وتابعها هنا." }} />
-  ),
+  component: OrdersPage,
 });
+function OrdersPage(){const {t}=useI18n();return <div className="container-page py-12"><h1 className="text-4xl text-forest mb-8">{t.account.orders}</h1><Orders/></div>;}

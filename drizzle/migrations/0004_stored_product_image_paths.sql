@@ -1,0 +1,1 @@
+ALTER TABLE public.product_images ADD COLUMN storage_path text CHECK(length(storage_path)<=1000);
