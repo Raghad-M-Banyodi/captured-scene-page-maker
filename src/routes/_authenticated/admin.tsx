@@ -1,0 +1,4 @@
+import {createFileRoute,redirect} from '@tanstack/react-router';
+import {Dashboard} from '@/components/account/Dashboard';
+import {supabase} from '@/integrations/supabase/client';
+export const Route=createFileRoute('/_authenticated/admin')({beforeLoad:async()=>{const r=await supabase.rpc('admin_session_allowed');if(r.error||!r.data)throw redirect({to:'/auth'});},head:()=>({meta:[{title:'Super Admin — GreenSwitch'},{name:'description',content:'Private GreenSwitch Super Admin platform management.'},{property:'og:title',content:'Super Admin — GreenSwitch'},{property:'og:description',content:'Administrator-only account reviews, marketplace management and verified environmental analytics.'},{property:'og:type',content:'website'},{name:'twitter:card',content:'summary_large_image'},{name:'robots',content:'noindex,nofollow'}]}),component:()=> <Dashboard role="admin"/>});
