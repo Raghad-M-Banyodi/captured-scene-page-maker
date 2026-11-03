@@ -134,6 +134,13 @@
       "when": 1793709259711,
       "tag": "0018_restrict_internal_security_definer_execution",
       "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1793737834834,
+      "tag": "0019_allow_unverified_supplier_drafts",
+      "breakpoints": true
     }
   ]
 }
