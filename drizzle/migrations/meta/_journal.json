@@ -36,6 +36,13 @@
       "when": 1793705881548,
       "tag": "0004_stored_product_image_paths",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1793706310326,
+      "tag": "0005_buyer_tool_history",
+      "breakpoints": true
     }
   ]
 }
