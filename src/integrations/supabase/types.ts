@@ -1331,6 +1331,7 @@ export type Database = {
     Functions: {
       account_active: { Args: { uid: string }; Returns: boolean }
       admin_manage: { Args: { action: string; payload: Json }; Returns: Json }
+      admin_session_allowed: { Args: never; Returns: boolean }
       admin_set_role: {
         Args: {
           chosen: Database["public"]["Enums"]["app_role"]
