@@ -15,8 +15,8 @@ import {Label} from '@/components/ui/label';
 import {Checkbox} from '@/components/ui/checkbox';
 import {RecyclingBoard} from './RecyclingBoard';
 import type {Tables} from '@/integrations/supabase/types';
-export function Recycling({partnerMode=false}:{partnerMode?:boolean}){
- const {t,lang}=useI18n(),s=t.account.recycling;const account=useAccount(),uid=account.user?.id,admin=account.roles.includes('admin');const qc=useQueryClient(),act=useServerFn(recyclingAction);const [tab,setTab]=useState(partnerMode?'pickups':'pickups'),[busy,setBusy]=useState(false);const [retry,setRetry]=useState<string>();
+export function Recycling({partnerMode=false,initial='pickups'}:{partnerMode?:boolean;initial?:string}){
+ const {t,lang}=useI18n(),s=t.account.recycling;const account=useAccount(),uid=account.user?.id,admin=account.roles.includes('admin');const qc=useQueryClient(),act=useServerFn(recyclingAction);const [tab,setTab]=useState(initial),[busy,setBusy]=useState(false);const [retry,setRetry]=useState<string>();
  const q=useQuery({queryKey:['recycling',uid],enabled:!!uid,queryFn:async()=>{
  const [requests,partners,businesses,files,ledger,vouchers,settings,profiles,orders,consents,suppliers]=await Promise.all([supabase.from('recycling_requests').select('*').order('created_at',{ascending:false}),supabase.from('recycling_partners').select('*'),supabase.from('recycling_businesses').select('*'),supabase.from('recycling_files').select('*'),supabase.from('green_points_ledger').select('*').order('created_at',{ascending:false}),supabase.from('green_vouchers').select('*'),supabase.from('recycling_settings').select('*').maybeSingle(),supabase.from('profiles').select('*'),supabase.from('orders').select('*'),supabase.from('green_supplier_consent').select('*'),supabase.from('supplier_profiles').select('*')]);
  for(const r of [requests,partners,businesses,files,ledger,vouchers,settings,profiles,orders,consents,suppliers])if(r.error)throw r.error;
