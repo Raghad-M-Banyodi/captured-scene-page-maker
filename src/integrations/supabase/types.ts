@@ -81,6 +81,33 @@ export type Database = {
           },
         ]
       }
+      buyer_tool_sessions: {
+        Row: {
+          created_at: string
+          id: string
+          inputs: Json
+          kind: string
+          results: Json
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          inputs: Json
+          kind: string
+          results: Json
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          inputs?: Json
+          kind?: string
+          results?: Json
+          user_id?: string
+        }
+        Relationships: []
+      }
       cart_items: {
         Row: {
           cart_id: string
