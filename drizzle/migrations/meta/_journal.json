@@ -113,6 +113,13 @@
       "when": 1793708435463,
       "tag": "0015_admin_eligibility_and_evidence_guards",
       "breakpoints": true
+    },
+    {
+      "idx": 16,
+      "version": "7",
+      "when": 1793708619855,
+      "tag": "0016_admin_role_grant_safety",
+      "breakpoints": true
     }
   ]
 }

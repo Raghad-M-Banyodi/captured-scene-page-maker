@@ -1,0 +1,1 @@
+DO $guard$ DECLARE definition text; BEGIN SELECT pg_get_functiondef('public.admin_set_role(uuid,public.app_role)'::regprocedure) INTO definition; definition:=regexp_replace(definition,'BEGIN','BEGIN IF target=auth.uid() OR NOT public.account_active(target) THEN RAISE EXCEPTION ''Role grants require an active independent account''; END IF;','i'); EXECUTE definition; END $guard$;
