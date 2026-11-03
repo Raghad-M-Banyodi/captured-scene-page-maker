@@ -192,6 +192,131 @@ export type Database = {
           },
         ]
       }
+      green_points_ledger: {
+        Row: {
+          amount: number
+          created_at: string
+          id: string
+          request_id: string | null
+          source_key: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          id?: string
+          request_id?: string | null
+          source_key: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          id?: string
+          request_id?: string | null
+          source_key?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "green_points_ledger_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "recycling_requests"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "green_points_ledger_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      green_supplier_consent: {
+        Row: {
+          approved: boolean
+          supplier_id: string
+          updated_at: string
+        }
+        Insert: {
+          approved?: boolean
+          supplier_id: string
+          updated_at?: string
+        }
+        Update: {
+          approved?: boolean
+          supplier_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "green_supplier_consent_supplier_id_fkey"
+            columns: ["supplier_id"]
+            isOneToOne: true
+            referencedRelation: "supplier_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      green_vouchers: {
+        Row: {
+          expires_at: string
+          id: string
+          is_demo: boolean
+          issued_at: string
+          maximum_discount: number
+          minimum_order: number
+          percent: number
+          source_key: string
+          used_at: string | null
+          used_order_id: string | null
+          user_id: string
+        }
+        Insert: {
+          expires_at: string
+          id?: string
+          is_demo?: boolean
+          issued_at?: string
+          maximum_discount: number
+          minimum_order?: number
+          percent: number
+          source_key: string
+          used_at?: string | null
+          used_order_id?: string | null
+          user_id: string
+        }
+        Update: {
+          expires_at?: string
+          id?: string
+          is_demo?: boolean
+          issued_at?: string
+          maximum_discount?: number
+          minimum_order?: number
+          percent?: number
+          source_key?: string
+          used_at?: string | null
+          used_order_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "green_vouchers_used_order_id_fkey"
+            columns: ["used_order_id"]
+            isOneToOne: true
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "green_vouchers_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       group_buying_campaigns: {
         Row: {
           business_count: number
@@ -376,6 +501,8 @@ export type Database = {
           campaign_id: string | null
           created_at: string
           delivery: Json
+          green_discount: number
+          green_voucher_id: string | null
           id: string
           is_demo: boolean
           request_key: string | null
@@ -389,6 +516,8 @@ export type Database = {
           campaign_id?: string | null
           created_at?: string
           delivery?: Json
+          green_discount?: number
+          green_voucher_id?: string | null
           id?: string
           is_demo?: boolean
           request_key?: string | null
@@ -402,6 +531,8 @@ export type Database = {
           campaign_id?: string | null
           created_at?: string
           delivery?: Json
+          green_discount?: number
+          green_voucher_id?: string | null
           id?: string
           is_demo?: boolean
           request_key?: string | null
@@ -423,6 +554,13 @@ export type Database = {
             columns: ["campaign_id"]
             isOneToOne: false
             referencedRelation: "group_buying_campaigns"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "orders_green_voucher_id_fkey"
+            columns: ["green_voucher_id"]
+            isOneToOne: false
+            referencedRelation: "green_vouchers"
             referencedColumns: ["id"]
           },
           {
@@ -671,6 +809,222 @@ export type Database = {
         }
         Relationships: []
       }
+      recycling_businesses: {
+        Row: {
+          approved: boolean
+          public_ranking: boolean
+          user_id: string
+        }
+        Insert: {
+          approved?: boolean
+          public_ranking?: boolean
+          user_id: string
+        }
+        Update: {
+          approved?: boolean
+          public_ranking?: boolean
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "recycling_businesses_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      recycling_files: {
+        Row: {
+          created_at: string
+          file_name: string
+          id: string
+          kind: string
+          request_id: string
+          storage_path: string
+          uploaded_by: string
+        }
+        Insert: {
+          created_at?: string
+          file_name: string
+          id?: string
+          kind: string
+          request_id: string
+          storage_path: string
+          uploaded_by: string
+        }
+        Update: {
+          created_at?: string
+          file_name?: string
+          id?: string
+          kind?: string
+          request_id?: string
+          storage_path?: string
+          uploaded_by?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "recycling_files_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "recycling_requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      recycling_months: {
+        Row: {
+          finalized_at: string
+          finalized_by: string
+          period: string
+          results: Json
+        }
+        Insert: {
+          finalized_at?: string
+          finalized_by: string
+          period: string
+          results: Json
+        }
+        Update: {
+          finalized_at?: string
+          finalized_by?: string
+          period?: string
+          results?: Json
+        }
+        Relationships: []
+      }
+      recycling_partners: {
+        Row: {
+          approved: boolean
+          company_name: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          approved?: boolean
+          company_name: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          approved?: boolean
+          company_name?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "recycling_partners_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      recycling_requests: {
+        Row: {
+          actual_weights: Json
+          buyer_id: string
+          city: string
+          collected_at: string | null
+          confirmed_recycled: boolean
+          created_at: string
+          estimated_weights: Json
+          id: string
+          location: string
+          partner_id: string | null
+          request_key: string
+          scheduled_at: string | null
+          status: string
+          verified_at: string | null
+          verified_by: string | null
+          verified_kg: number
+        }
+        Insert: {
+          actual_weights?: Json
+          buyer_id: string
+          city: string
+          collected_at?: string | null
+          confirmed_recycled?: boolean
+          created_at?: string
+          estimated_weights: Json
+          id?: string
+          location: string
+          partner_id?: string | null
+          request_key: string
+          scheduled_at?: string | null
+          status?: string
+          verified_at?: string | null
+          verified_by?: string | null
+          verified_kg?: number
+        }
+        Update: {
+          actual_weights?: Json
+          buyer_id?: string
+          city?: string
+          collected_at?: string | null
+          confirmed_recycled?: boolean
+          created_at?: string
+          estimated_weights?: Json
+          id?: string
+          location?: string
+          partner_id?: string | null
+          request_key?: string
+          scheduled_at?: string | null
+          status?: string
+          verified_at?: string | null
+          verified_by?: string | null
+          verified_kg?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "recycling_requests_buyer_id_fkey"
+            columns: ["buyer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "recycling_requests_partner_id_fkey"
+            columns: ["partner_id"]
+            isOneToOne: false
+            referencedRelation: "recycling_partners"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      recycling_settings: {
+        Row: {
+          expiry_days: number
+          id: boolean
+          max_discount: number
+          minimum_order: number
+          points_per_kg: number
+          rewards: Json
+          winner_percents: number[]
+        }
+        Insert: {
+          expiry_days?: number
+          id?: boolean
+          max_discount?: number
+          minimum_order?: number
+          points_per_kg?: number
+          rewards?: Json
+          winner_percents?: number[]
+        }
+        Update: {
+          expiry_days?: number
+          id?: boolean
+          max_discount?: number
+          minimum_order?: number
+          points_per_kg?: number
+          rewards?: Json
+          winner_percents?: number[]
+        }
+        Relationships: []
+      }
       saved_products: {
         Row: {
           created_at: string
@@ -914,6 +1268,10 @@ export type Database = {
       }
       owns_supplier: { Args: { sid: string }; Returns: boolean }
       public_product: { Args: { pid: string }; Returns: boolean }
+      recycling_access: { Args: { rid: string }; Returns: boolean }
+      recycling_public_board: { Args: never; Returns: Json }
+      recycling_rankings: { Args: { month_start: string }; Returns: Json }
+      recycling_weights: { Args: { w: Json }; Returns: number }
       release_group_campaign: {
         Args: { cid: string; final_state: string }
         Returns: undefined
