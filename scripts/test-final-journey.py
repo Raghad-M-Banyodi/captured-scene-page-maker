@@ -52,6 +52,12 @@ for user in buyers:
 sid = value(f"SELECT id FROM supplier_profiles WHERE user_id='{supplier}'")
 as_user(supplier, f"UPDATE supplier_profiles SET verification_status='approved' WHERE id='{sid}'", False)
 assert value(f"SELECT verification_status FROM supplier_profiles WHERE id='{sid}'") == 'pending'
+draft = str(uuid.uuid4())
+as_user(supplier, f"INSERT INTO products(id,supplier_id,name_en,name_ar,price,stock,moq,material,composition,non_plastic,status) VALUES('{draft}','{sid}','SIMULATED QA draft bowl','وعاء تجريبي',1.25,100,10,'kraft','Uncoated paper',true,'pending')")
+assert value(f"SELECT status FROM products WHERE id='{draft}'") == 'pending'
+assert as_user(supplier, f"UPDATE products SET status='published' WHERE id='{draft}'", False).returncode
+assert value(f"SELECT status FROM products WHERE id='{draft}'") == 'pending'
+assert value(f"SET ROLE anon; SELECT count(*) FROM products WHERE id='{draft}'") == '0'
 as_user(admin, f"SELECT admin_verify_supplier('{sid}','approved')")
 pid = str(uuid.uuid4())
 as_user(supplier, f"INSERT INTO products(id,supplier_id,name_en,name_ar,price,stock,moq,material,composition,non_plastic,status) VALUES('{pid}','{sid}','SIMULATED QA paper container','علبة ورقية تجريبية',0.75,20000,500,'kraft','Uncoated paper',true,'pending')")
