@@ -6,6 +6,8 @@ import hero from "@/assets/hero.jpg";
 export const Route = createFileRoute("/about")({
   head: () => ({
     meta: [
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { title: "About Us — GreenSwitch" },
       { name: "description", content: "GreenSwitch is a Palestinian environmental technology initiative for sustainable procurement." },
       { property: "og:title", content: "About GreenSwitch" },

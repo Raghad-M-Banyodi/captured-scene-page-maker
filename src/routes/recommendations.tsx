@@ -5,6 +5,8 @@ import { ComingSoon } from "@/components/site/ComingSoon";
 export const Route = createFileRoute("/recommendations")({
   head: () => ({
     meta: [
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { title: "AI Recommendations — GreenSwitch" },
       { name: "description", content: "Describe your business and current packaging and our AI advisor will suggest the best sustainable alternatives." },
       { property: "og:title", content: "AI Recommendations — GreenSwitch" },

@@ -13,6 +13,8 @@ export const Route = createFileRoute("/")({
   loader:({context})=>context.queryClient.ensureQueryData(catalogueOptions),
   head: () => ({
     meta: [
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { title: "GreenSwitch — Smarter Packaging. Greener Business." },
       { name: "description", content: "Discover sustainable packaging, compare trusted Palestinian suppliers and buy together for better prices." },
       { property: "og:title", content: "GreenSwitch — Smarter Packaging. Greener Business." },

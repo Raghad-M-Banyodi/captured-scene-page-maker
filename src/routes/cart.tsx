@@ -5,6 +5,8 @@ import { ComingSoon } from "@/components/site/ComingSoon";
 export const Route = createFileRoute("/cart")({
   head: () => ({
     meta: [
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { title: "Shopping Cart — GreenSwitch" },
       { name: "description", content: "Your cart will be available once ordering is connected." },
       { property: "og:title", content: "Shopping Cart — GreenSwitch" },

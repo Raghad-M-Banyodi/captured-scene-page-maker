@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { catalogueOptions } from "@/lib/account/catalogue";
 import { useMemo, useState } from "react";
@@ -19,6 +19,8 @@ export const Route = createFileRoute("/marketplace")({
   loader: ({context}) => context.queryClient.ensureQueryData(catalogueOptions),
   head: () => ({
     meta: [
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { title: "Marketplace — GreenSwitch" },
       { name: "description", content: "Search and compare sustainable packaging by category, material, price and supplier." },
       { property: "og:title", content: "Sustainable Packaging Marketplace — GreenSwitch" },
@@ -88,6 +90,7 @@ function Marketplace() {
 
       </div>
 
+      {import.meta.env.DEV&&<Button variant="ghost" asChild className="mt-4"><Link to="/development-demo">{t.account.devDemo}</Link></Button>}
       <div className="mt-8 flex flex-col gap-3 sm:flex-row">
         <div className="relative flex-1">
           <Search className="pointer-events-none absolute start-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />

@@ -25,10 +25,13 @@ export const Route = createFileRoute("/products/$productId")({
     const desc = loaderData?.product.description.en ?? "Sustainable packaging product on GreenSwitch.";
     return {
       meta: [
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
         { title: `${name} — GreenSwitch` },
         { name: "description", content: desc },
         { property: "og:title", content: `${name} — GreenSwitch` },
         { property: "og:description", content: desc },
+        ...(loaderData?.product.image.startsWith('https://') ? [{property:'og:image',content:loaderData.product.image},{name:'twitter:image',content:loaderData.product.image}] : []),
         ...(loaderData ? [] : [{ name: "robots", content: "noindex" }]),
       ],
     };

@@ -5,6 +5,8 @@ import { ComingSoon } from "@/components/site/ComingSoon";
 export const Route = createFileRoute("/group-buying")({
   head: () => ({
     meta: [
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { title: "Group Buying — GreenSwitch" },
       { name: "description", content: "Pool orders with nearby businesses to unlock volume pricing. Open group orders will appear here once accounts and ordering are live." },
       { property: "og:title", content: "Group Buying — GreenSwitch" },
