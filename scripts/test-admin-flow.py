@@ -32,7 +32,7 @@ as_user(admin,f"SELECT recycling_action('partner','{json.dumps(dict(userId=partn
 pid=sql(f"SELECT id FROM recycling_partners WHERE user_id='{partner}'").stdout.strip()
 assert json.loads(manage(admin,'partner_areas',dict(id=pid,areas=['Nablus','Ramallah'])))['ok']
 assert sql(f"SELECT operating_areas::text FROM recycling_partners WHERE id='{pid}'").stdout.strip()=='{Nablus,Ramallah}'
-vid=str(uuid.uuid4());sql(f"INSERT INTO green_vouchers(id,user_id,percent,maximum_discount,expires_at,source_key) VALUES('{vid}','{buyer}',5,100,now()+interval '30 days','isolated-review')")
+vid=str(uuid.uuid4());sql(f"INSERT INTO green_vouchers(id,user_id,percent,maximum_discount,expires_at,source_key) VALUES('{vid}','{buyer}',5,100,now()+interval '30 days','isolated-review:{vid}')")
 assert json.loads(manage(admin,'voucher_review',dict(id=vid,status='approved')))['ok']
 assert sql(f"SELECT admin_review FROM green_vouchers WHERE id='{vid}'").stdout.strip()=='approved'
 assert as_user(buyer,"INSERT INTO account_access(user_id,status) VALUES(gen_random_uuid(),'active')",False).returncode
