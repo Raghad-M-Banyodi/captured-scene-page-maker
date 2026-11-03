@@ -14,6 +14,74 @@ export type Database = {
   }
   public: {
     Tables: {
+      account_access: {
+        Row: {
+          reason: string
+          status: string
+          updated_at: string
+          updated_by: string | null
+          user_id: string
+        }
+        Insert: {
+          reason?: string
+          status?: string
+          updated_at?: string
+          updated_by?: string | null
+          user_id: string
+        }
+        Update: {
+          reason?: string
+          status?: string
+          updated_at?: string
+          updated_by?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "account_access_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      admin_audit_log: {
+        Row: {
+          action: string
+          actor_id: string | null
+          after_state: Json
+          before_state: Json
+          created_at: string
+          entity_id: string
+          entity_type: string
+          id: string
+          outcome: string
+        }
+        Insert: {
+          action: string
+          actor_id?: string | null
+          after_state?: Json
+          before_state?: Json
+          created_at?: string
+          entity_id: string
+          entity_type: string
+          id?: string
+          outcome?: string
+        }
+        Update: {
+          action?: string
+          actor_id?: string | null
+          after_state?: Json
+          before_state?: Json
+          created_at?: string
+          entity_id?: string
+          entity_type?: string
+          id?: string
+          outcome?: string
+        }
+        Relationships: []
+      }
       ai_recommendation_history: {
         Row: {
           created_at: string
@@ -262,6 +330,7 @@ export type Database = {
       }
       green_vouchers: {
         Row: {
+          admin_review: string
           expires_at: string
           id: string
           is_demo: boolean
@@ -275,6 +344,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          admin_review?: string
           expires_at: string
           id?: string
           is_demo?: boolean
@@ -288,6 +358,7 @@ export type Database = {
           user_id: string
         }
         Update: {
+          admin_review?: string
           expires_at?: string
           id?: string
           is_demo?: boolean
@@ -571,6 +642,33 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      platform_settings: {
+        Row: {
+          announcement_ar: string
+          announcement_en: string
+          id: boolean
+          support_email: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          announcement_ar?: string
+          announcement_en?: string
+          id?: boolean
+          support_email?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          announcement_ar?: string
+          announcement_en?: string
+          id?: boolean
+          support_email?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
       }
       product_categories: {
         Row: {
@@ -899,18 +997,21 @@ export type Database = {
           approved: boolean
           company_name: string
           id: string
+          operating_areas: string[]
           user_id: string
         }
         Insert: {
           approved?: boolean
           company_name: string
           id?: string
+          operating_areas?: string[]
           user_id: string
         }
         Update: {
           approved?: boolean
           company_name?: string
           id?: string
+          operating_areas?: string[]
           user_id?: string
         }
         Relationships: [
@@ -1228,6 +1329,8 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      account_active: { Args: { uid: string }; Returns: boolean }
+      admin_manage: { Args: { action: string; payload: Json }; Returns: Json }
       admin_set_role: {
         Args: {
           chosen: Database["public"]["Enums"]["app_role"]
