@@ -1,4 +1,8 @@
 # GreenSwitch account phase
+- [ ] Real-product advisor wizard with clearly labeled deterministic fallback and private history
+- [ ] Exact cost calculator, price tiers, charts and private calculation history
+- [ ] Weight-based impact estimates, completed-order distinction and trends
+- [ ] Restaurant/cafe calculation and recommendation tests; buyer tool verification
 - [x] Supplier product pricing, composition, image/document uploads and non-plastic review implemented
 - [x] Persistent cart totals and supplier-specific secure purchase requests implemented
 - [x] Buyer order tracking and supplier fulfillment status updates implemented
