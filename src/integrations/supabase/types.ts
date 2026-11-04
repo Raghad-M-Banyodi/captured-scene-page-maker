@@ -332,6 +332,7 @@ export type Database = {
         Row: {
           admin_review: string
           expires_at: string
+          funding_source: string
           id: string
           is_demo: boolean
           issued_at: string
@@ -346,6 +347,7 @@ export type Database = {
         Insert: {
           admin_review?: string
           expires_at: string
+          funding_source?: string
           id?: string
           is_demo?: boolean
           issued_at?: string
@@ -360,6 +362,7 @@ export type Database = {
         Update: {
           admin_review?: string
           expires_at?: string
+          funding_source?: string
           id?: string
           is_demo?: boolean
           issued_at?: string
@@ -572,6 +575,7 @@ export type Database = {
           campaign_id: string | null
           created_at: string
           delivery: Json
+          discount_funding_source: string | null
           green_discount: number
           green_voucher_id: string | null
           id: string
@@ -587,6 +591,7 @@ export type Database = {
           campaign_id?: string | null
           created_at?: string
           delivery?: Json
+          discount_funding_source?: string | null
           green_discount?: number
           green_voucher_id?: string | null
           id?: string
@@ -602,6 +607,7 @@ export type Database = {
           campaign_id?: string | null
           created_at?: string
           delivery?: Json
+          discount_funding_source?: string | null
           green_discount?: number
           green_voucher_id?: string | null
           id?: string
@@ -805,6 +811,7 @@ export type Database = {
           pack_size: number
           price: number
           price_unit: string
+          rejection_reason: string
           sizes: string[]
           specs: Json
           status: string
@@ -830,6 +837,7 @@ export type Database = {
           pack_size?: number
           price: number
           price_unit?: string
+          rejection_reason?: string
           sizes?: string[]
           specs?: Json
           status?: string
@@ -855,6 +863,7 @@ export type Database = {
           pack_size?: number
           price?: number
           price_unit?: string
+          rejection_reason?: string
           sizes?: string[]
           specs?: Json
           status?: string
@@ -1034,11 +1043,14 @@ export type Database = {
           city: string
           collected_at: string | null
           confirmed_recycled: boolean
+          contact_name: string
+          contact_phone: string
           created_at: string
           estimated_weights: Json
           id: string
           location: string
           partner_id: string | null
+          preferred_at: string | null
           request_key: string
           scheduled_at: string | null
           status: string
@@ -1052,11 +1064,14 @@ export type Database = {
           city: string
           collected_at?: string | null
           confirmed_recycled?: boolean
+          contact_name?: string
+          contact_phone?: string
           created_at?: string
           estimated_weights: Json
           id?: string
           location: string
           partner_id?: string | null
+          preferred_at?: string | null
           request_key: string
           scheduled_at?: string | null
           status?: string
@@ -1070,11 +1085,14 @@ export type Database = {
           city?: string
           collected_at?: string | null
           confirmed_recycled?: boolean
+          contact_name?: string
+          contact_phone?: string
           created_at?: string
           estimated_weights?: Json
           id?: string
           location?: string
           partner_id?: string | null
+          preferred_at?: string | null
           request_key?: string
           scheduled_at?: string | null
           status?: string
@@ -1199,6 +1217,7 @@ export type Database = {
           description: string
           id: string
           is_demo: boolean
+          rejection_reason: string
           updated_at: string
           user_id: string | null
           verification_status: string
@@ -1210,6 +1229,7 @@ export type Database = {
           description?: string
           id?: string
           is_demo?: boolean
+          rejection_reason?: string
           updated_at?: string
           user_id?: string | null
           verification_status?: string
@@ -1221,6 +1241,7 @@ export type Database = {
           description?: string
           id?: string
           is_demo?: boolean
+          rejection_reason?: string
           updated_at?: string
           user_id?: string | null
           verification_status?: string
@@ -1230,6 +1251,64 @@ export type Database = {
             foreignKeyName: "supplier_profiles_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      supplier_rewards: {
+        Row: {
+          activated_at: string
+          expires_at: string
+          id: string
+          kind: string
+          points: number
+          product_id: string | null
+          request_key: string
+          supplier_id: string
+          user_id: string
+        }
+        Insert: {
+          activated_at?: string
+          expires_at: string
+          id?: string
+          kind: string
+          points: number
+          product_id?: string | null
+          request_key: string
+          supplier_id: string
+          user_id: string
+        }
+        Update: {
+          activated_at?: string
+          expires_at?: string
+          id?: string
+          kind?: string
+          points?: number
+          product_id?: string | null
+          request_key?: string
+          supplier_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "supplier_rewards_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "supplier_rewards_supplier_id_fkey"
+            columns: ["supplier_id"]
+            isOneToOne: false
+            referencedRelation: "supplier_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "supplier_rewards_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
@@ -1350,8 +1429,10 @@ export type Database = {
         Args: { next_status: string; order_id: string }
         Returns: undefined
       }
+      confirm_group_commitment: { Args: { cid: string }; Returns: string }
       create_group_campaign: { Args: { payload: Json }; Returns: string }
       expire_group_campaigns: { Args: never; Returns: undefined }
+      featured_product_ids: { Args: never; Returns: string[] }
       group_buyer_eligible: { Args: never; Returns: boolean }
       has_role: {
         Args: {
@@ -1390,6 +1471,20 @@ export type Database = {
       request_cart_order: {
         Args: { address: Json; request_id: string }
         Returns: string[]
+      }
+      request_cart_with_voucher: {
+        Args: {
+          address: Json
+          request_id: string
+          supplier?: string
+          voucher?: string
+        }
+        Returns: string[]
+      }
+      resubmit_supplier: { Args: never; Returns: undefined }
+      supplier_reward_redeem: {
+        Args: { kind_value: string; product: string; request_id: string }
+        Returns: string
       }
     }
     Enums: {

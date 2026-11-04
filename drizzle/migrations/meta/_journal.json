@@ -162,6 +162,13 @@
       "when": 1793783912987,
       "tag": "0022_recycling_company_signup",
       "breakpoints": true
+    },
+    {
+      "idx": 23,
+      "version": "7",
+      "when": 1793831314998,
+      "tag": "0023_integrated_hackathon_workflows",
+      "breakpoints": true
     }
   ]
 }

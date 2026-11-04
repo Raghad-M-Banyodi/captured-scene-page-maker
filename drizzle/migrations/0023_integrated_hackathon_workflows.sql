@@ -1,0 +1,64 @@
+ALTER TABLE public.products ADD COLUMN rejection_reason text NOT NULL DEFAULT '';
+ALTER TABLE public.supplier_profiles ADD COLUMN rejection_reason text NOT NULL DEFAULT '';
+ALTER TABLE public.recycling_requests ADD COLUMN contact_name text NOT NULL DEFAULT '', ADD COLUMN contact_phone text NOT NULL DEFAULT '', ADD COLUMN preferred_at timestamptz;
+ALTER TABLE public.green_vouchers ADD COLUMN funding_source text NOT NULL DEFAULT 'supplier' CHECK(funding_source IN ('platform','supplier'));
+ALTER TABLE public.orders ADD COLUMN discount_funding_source text;
+CREATE TABLE public.supplier_rewards(id uuid PRIMARY KEY DEFAULT gen_random_uuid(), user_id uuid NOT NULL REFERENCES public.profiles(id), supplier_id uuid NOT NULL REFERENCES public.supplier_profiles(id), product_id uuid REFERENCES public.products(id), kind text NOT NULL CHECK(kind IN ('featured','analytics')), points integer NOT NULL, request_key uuid NOT NULL UNIQUE, activated_at timestamptz NOT NULL DEFAULT now(), expires_at timestamptz NOT NULL);
+GRANT SELECT ON public.supplier_rewards TO authenticated;
+GRANT ALL ON public.supplier_rewards TO service_role;
+ALTER TABLE public.supplier_rewards ENABLE ROW LEVEL SECURITY;
+CREATE POLICY supplier_reward_read ON public.supplier_rewards FOR SELECT TO authenticated USING(public.account_active(auth.uid()) AND (user_id=auth.uid() OR public.has_role(auth.uid(),'admin')));
+CREATE FUNCTION public.supplier_reward_redeem(kind_value text, product uuid, request_id uuid) RETURNS uuid LANGUAGE plpgsql SECURITY DEFINER SET search_path=public AS $$ DECLARE s public.supplier_profiles; cost integer; days integer; rid uuid; BEGIN
+IF NOT public.account_active(auth.uid()) THEN RAISE EXCEPTION 'Active account required'; END IF;
+SELECT * INTO s FROM public.supplier_profiles WHERE user_id=auth.uid() AND verification_status='approved' FOR UPDATE; IF NOT FOUND THEN RAISE EXCEPTION 'Approved supplier required'; END IF;
+PERFORM 1 FROM public.recycling_businesses WHERE user_id=auth.uid() FOR UPDATE;
+SELECT id INTO rid FROM public.supplier_rewards WHERE request_key=request_id AND user_id=auth.uid() AND kind=kind_value AND product_id IS NOT DISTINCT FROM product; IF FOUND THEN RETURN rid; END IF;
+IF kind_value='featured' THEN cost:=500; days:=7; IF NOT EXISTS(SELECT 1 FROM public.products WHERE id=product AND supplier_id=s.id AND public.public_product(id)) THEN RAISE EXCEPTION 'Approved owned product required'; END IF;
+ELSIF kind_value='analytics' AND product IS NULL THEN cost:=800; days:=30; ELSE RAISE EXCEPTION 'Invalid benefit'; END IF;
+IF EXISTS(SELECT 1 FROM public.supplier_rewards WHERE supplier_id=s.id AND kind=kind_value AND product_id IS NOT DISTINCT FROM product AND expires_at>now()) THEN RAISE EXCEPTION 'Benefit already active'; END IF;
+IF (SELECT coalesce(sum(amount),0) FROM public.green_points_ledger WHERE user_id=auth.uid())<cost THEN RAISE EXCEPTION 'Insufficient points'; END IF;
+INSERT INTO public.green_points_ledger(user_id,amount,source_key) VALUES(auth.uid(),-cost,'benefit:'||request_id);
+INSERT INTO public.supplier_rewards(user_id,supplier_id,product_id,kind,points,request_key,expires_at) VALUES(auth.uid(),s.id,product,kind_value,cost,request_id,now()+make_interval(days=>days)) RETURNING id INTO rid; RETURN rid; END $$;
+REVOKE ALL ON FUNCTION public.supplier_reward_redeem(text,uuid,uuid) FROM PUBLIC,anon; GRANT EXECUTE ON FUNCTION public.supplier_reward_redeem(text,uuid,uuid) TO authenticated;
+CREATE FUNCTION public.featured_product_ids() RETURNS SETOF uuid LANGUAGE sql STABLE SECURITY DEFINER SET search_path=public AS $$ SELECT DISTINCT product_id FROM public.supplier_rewards WHERE kind='featured' AND expires_at>now() AND public.public_product(product_id) $$;
+REVOKE ALL ON FUNCTION public.featured_product_ids() FROM PUBLIC; GRANT EXECUTE ON FUNCTION public.featured_product_ids() TO anon,authenticated;
+DO $$ DECLARE d text; BEGIN
+SELECT pg_get_functiondef('public.recycling_action(text,jsonb)'::regprocedure) INTO d;
+d:=replace(d,'NOT public.has_role(target,''buyer'')','NOT (public.has_role(target,''buyer'') OR public.has_role(target,''supplier''))');
+d:=replace(d,'IF NOT public.group_buyer_eligible() OR NOT EXISTS(SELECT 1 FROM public.recycling_businesses WHERE user_id=uid AND approved) THEN','IF NOT ((public.group_buyer_eligible() AND EXISTS(SELECT 1 FROM public.recycling_businesses WHERE user_id=uid AND approved)) OR EXISTS(SELECT 1 FROM public.supplier_profiles WHERE user_id=uid AND verification_status=''approved'')) THEN');
+d:=replace(d,'weights:=payload->''weights''; kg:=public.recycling_weights(weights);','INSERT INTO public.recycling_businesses(user_id,approved) SELECT uid,true WHERE EXISTS(SELECT 1 FROM public.supplier_profiles WHERE user_id=uid AND verification_status=''approved'') ON CONFLICT(user_id) DO NOTHING; weights:=payload->''weights''; kg:=public.recycling_weights(weights);');
+d:=replace(d,'INSERT INTO public.recycling_requests(buyer_id,estimated_weights,city,location,request_key) VALUES(uid,weights,payload->>''city'',payload->>''location'',(payload->>''key'')::uuid)','INSERT INTO public.recycling_requests(buyer_id,estimated_weights,city,location,request_key,contact_name,contact_phone,preferred_at) VALUES(uid,weights,payload->>''city'',payload->>''location'',(payload->>''key'')::uuid,coalesce(payload->>''contactName'',''''),coalesce(payload->>''contactPhone'',''''),(payload->>''preferredAt'')::timestamptz)');
+d:=replace(d,'OR NOT EXISTS(SELECT 1 FROM public.green_supplier_consent WHERE supplier_id=o.supplier_id AND approved)','OR (v.funding_source=''supplier'' AND NOT EXISTS(SELECT 1 FROM public.green_supplier_consent WHERE supplier_id=o.supplier_id AND approved))');
+d:=replace(d,'green_discount=discount WHERE id=o.id','green_discount=discount,discount_funding_source=v.funding_source WHERE id=o.id');
+EXECUTE d;
+SELECT pg_get_functiondef('public.join_group_campaign(uuid,integer,jsonb)'::regprocedure) INTO d;
+d:=regexp_replace(d,'FOR g IN SELECT \* FROM public.group_buying_participants.*?END LOOP;','','s'); EXECUTE d;
+SELECT pg_get_functiondef('public.admin_manage(text,jsonb)'::regprocedure) INTO d;
+d:=replace(d,'IF action=''account'' THEN','IF action=''supplier'' THEN target:=(payload->>''id'')::uuid; IF payload->>''status'' NOT IN (''approved'',''rejected'') OR (payload->>''status''=''rejected'' AND length(trim(coalesce(payload->>''reason'','''')))=0) THEN RAISE EXCEPTION ''Review reason required''; END IF; PERFORM public.admin_verify_supplier(target,payload->>''status''); UPDATE public.supplier_profiles SET rejection_reason=CASE WHEN payload->>''status''=''rejected'' THEN payload->>''reason'' ELSE '''' END WHERE id=target; ELSIF action=''account'' THEN');
+d:=replace(d,'UPDATE public.products SET status=payload->>''status'' WHERE id=target;','IF payload->>''status''=''rejected'' AND length(trim(coalesce(payload->>''reason'','''')))=0 THEN RAISE EXCEPTION ''Rejection reason required''; END IF; UPDATE public.products SET status=payload->>''status'',rejection_reason=CASE WHEN payload->>''status''=''rejected'' THEN payload->>''reason'' ELSE '''' END WHERE id=target;');
+d:=replace(d,'SET admin_review=payload->>''status''','SET admin_review=payload->>''status'',funding_source=coalesce(payload->>''fundingSource'',funding_source)'); EXECUTE d;
+END $$;
+CREATE FUNCTION public.confirm_group_commitment(cid uuid) RETURNS uuid LANGUAGE plpgsql SECURITY DEFINER SET search_path=public AS $$ DECLARE c public.group_buying_campaigns; g public.group_buying_participants; p public.products; oid uuid; BEGIN
+IF NOT public.account_active(auth.uid()) OR NOT public.group_buyer_eligible() THEN RAISE EXCEPTION 'Buyer required'; END IF;
+SELECT * INTO c FROM public.group_buying_campaigns WHERE id=cid FOR UPDATE;
+SELECT * INTO g FROM public.group_buying_participants WHERE campaign_id=cid AND user_id=auth.uid() FOR UPDATE;
+IF g.order_id IS NOT NULL THEN RETURN g.order_id; END IF;
+IF g.id IS NULL OR g.commitment_status<>'committed' OR c.lifecycle<>'target_reached' OR c.closes_at<=now() THEN RAISE EXCEPTION 'Open reached campaign required'; END IF;
+SELECT * INTO p FROM public.products WHERE id=c.product_id; IF NOT public.public_product(p.id) THEN RAISE EXCEPTION 'Product unavailable'; END IF;
+INSERT INTO public.orders(buyer_id,supplier_id,status,total,delivery,request_key,campaign_id) VALUES(g.user_id,c.supplier_id,'pending',g.quantity*c.unit_price,g.delivery,cid,cid) RETURNING id INTO oid;
+INSERT INTO public.order_items(order_id,product_id,quantity,unit_price,name_en,name_ar,price_unit,pack_size) VALUES(oid,p.id,g.quantity,c.unit_price,p.name_en,p.name_ar,p.price_unit,p.pack_size);
+UPDATE public.group_buying_participants SET order_id=oid,commitment_status='ordered' WHERE id=g.id; RETURN oid; END $$;
+REVOKE ALL ON FUNCTION public.confirm_group_commitment(uuid) FROM PUBLIC,anon; GRANT EXECUTE ON FUNCTION public.confirm_group_commitment(uuid) TO authenticated;
+CREATE OR REPLACE FUNCTION public.expire_group_campaigns() RETURNS void LANGUAGE plpgsql SECURITY DEFINER SET search_path=public AS $$ DECLARE c record; g record; BEGIN
+FOR c IN SELECT * FROM public.group_buying_campaigns WHERE lifecycle IN ('active','target_reached') AND closes_at<=now() ORDER BY id FOR UPDATE SKIP LOCKED LOOP
+FOR g IN SELECT * FROM public.group_buying_participants WHERE campaign_id=c.id AND commitment_status='committed' FOR UPDATE LOOP UPDATE public.products SET stock=stock+g.quantity WHERE id=c.product_id; UPDATE public.group_buying_participants SET commitment_status='released' WHERE id=g.id; END LOOP;
+UPDATE public.group_buying_campaigns SET lifecycle=CASE WHEN NOT EXISTS(SELECT 1 FROM public.orders WHERE campaign_id=c.id) THEN 'expired' WHEN NOT EXISTS(SELECT 1 FROM public.orders WHERE campaign_id=c.id AND status NOT IN ('delivered','completed','rejected','cancelled')) THEN 'completed' ELSE 'target_reached' END WHERE id=c.id; END LOOP; END $$;
+CREATE FUNCTION public.request_cart_with_voucher(request_id uuid,address jsonb,voucher uuid DEFAULT NULL,supplier uuid DEFAULT NULL) RETURNS SETOF uuid LANGUAGE plpgsql SECURITY DEFINER SET search_path=public AS $$ DECLARE oid uuid; BEGIN
+IF NOT public.account_active(auth.uid()) THEN RAISE EXCEPTION 'Active buyer required'; END IF;
+PERFORM public.request_cart_order(request_id,address);
+IF voucher IS NOT NULL THEN SELECT id INTO oid FROM public.orders WHERE buyer_id=auth.uid() AND request_key=request_id AND supplier_id=supplier; IF oid IS NULL THEN RAISE EXCEPTION 'Supplier order required'; END IF; PERFORM public.recycling_action('apply',jsonb_build_object('orderId',oid,'voucherId',voucher)); END IF;
+RETURN QUERY SELECT id FROM public.orders WHERE buyer_id=auth.uid() AND request_key=request_id; END $$;
+REVOKE ALL ON FUNCTION public.request_cart_with_voucher(uuid,jsonb,uuid,uuid) FROM PUBLIC,anon; GRANT EXECUTE ON FUNCTION public.request_cart_with_voucher(uuid,jsonb,uuid,uuid) TO authenticated;
+CREATE FUNCTION public.resubmit_supplier() RETURNS void LANGUAGE plpgsql SECURITY DEFINER SET search_path=public AS $$ BEGIN IF NOT public.account_active(auth.uid()) THEN RAISE EXCEPTION 'Active supplier required'; END IF; UPDATE public.supplier_profiles SET verification_status='pending',rejection_reason='' WHERE user_id=auth.uid() AND verification_status='rejected'; IF NOT FOUND THEN RAISE EXCEPTION 'Rejected application required'; END IF; END $$;
+REVOKE ALL ON FUNCTION public.resubmit_supplier() FROM PUBLIC,anon; GRANT EXECUTE ON FUNCTION public.resubmit_supplier() TO authenticated;
+CREATE OR REPLACE FUNCTION public.recycling_rankings(month_start date) RETURNS jsonb LANGUAGE sql STABLE SECURITY DEFINER SET search_path=public AS $$ WITH totals AS (SELECT r.buyer_id,coalesce(b.business_name,p.full_name) name,sum(r.verified_kg) kg,count(*) pickups,jsonb_build_object('paper',sum(coalesce((r.actual_weights->>'paper')::numeric,0)),'cardboard',sum(coalesce((r.actual_weights->>'cardboard')::numeric,0)),'aluminum',sum(coalesce((r.actual_weights->>'aluminum')::numeric,0))) materials,min(r.verified_at) first_at FROM public.recycling_requests r JOIN public.recycling_businesses rb ON rb.user_id=r.buyer_id AND rb.approved AND rb.public_ranking JOIN public.profiles p ON p.id=r.buyer_id LEFT JOIN public.business_profiles b ON b.user_id=r.buyer_id WHERE r.status='verified' AND r.verified_at IS NOT NULL AND r.verified_kg>0 AND date_trunc('month',r.verified_at AT TIME ZONE 'Asia/Gaza')::date=month_start GROUP BY r.buyer_id,b.business_name,p.full_name), ranked AS (SELECT *,row_number() OVER(ORDER BY kg DESC,first_at,buyer_id) rank FROM totals) SELECT coalesce(jsonb_agg(jsonb_build_object('user_id',buyer_id,'name',name,'kg',kg,'rank',rank,'pickups',pickups,'materials',materials) ORDER BY rank),'[]'::jsonb) FROM ranked $$;
