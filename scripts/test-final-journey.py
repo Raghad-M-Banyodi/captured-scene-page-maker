@@ -74,6 +74,11 @@ def join(user):
 with concurrent.futures.ThreadPoolExecutor(max_workers=5) as pool:
     list(pool.map(join, buyers))
 join(buyer)
+assert value(f"SELECT count(*) FROM orders WHERE campaign_id='{cid}'") == '0'
+assert value(f"SELECT lifecycle FROM group_buying_campaigns WHERE id='{cid}'") == 'target_reached'
+for user in buyers:
+    as_user(user, f"SELECT confirm_group_commitment('{cid}')")
+as_user(buyer, f"SELECT confirm_group_commitment('{cid}')")
 assert value(f"SELECT count(*),sum(total),min(total),max(total) FROM orders WHERE campaign_id='{cid}'") == '5|3000.00|600.00|600.00'
 assert value(f"SELECT stock FROM products WHERE id='{pid}'") == '15000'
 assert as_user(partner, f"SELECT join_group_campaign('{cid}',1,'{address}')", False).returncode

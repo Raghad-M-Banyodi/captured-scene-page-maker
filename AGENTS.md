@@ -29,3 +29,6 @@
 - Administrator supplier-role grants transactionally provision a pending supplier profile; recycling revocations remain possible for inactive targets, and voucher replay validates ownership before distinguishing prior success from new eligibility.
 - The final integrated journey test uses a fully migrated disposable localhost database with explicitly simulated records; it never provisions hosted test identities or modifies hosted business data.
 - Raw recycling rankings and trigger-only security-definer functions have no client EXECUTE grants; only the sanitized public board exposes competition results.
+- Group thresholds unlock pricing; participants explicitly confirm pending requests, while expiry releases only unconverted reservations to preserve existing orders.
+- Supplier benefits use the shared points ledger and atomic authenticated redemption; public featuring exposes only eligible product IDs and analytics checks unexpired entitlements server-side.
+- Voucher funding is recorded independently of payment and applied atomically with supplier-split checkout; supplier-funded discounts require explicit consent.

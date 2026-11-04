@@ -1485,7 +1485,7 @@ export type Database = {
       resubmit_account: { Args: never; Returns: undefined }
       resubmit_supplier: { Args: never; Returns: undefined }
       supplier_reward_redeem: {
-        Args: { kind_value: string; product: string; request_id: string }
+        Args: { kind_value: string; product?: string; request_id?: string }
         Returns: string
       }
     }

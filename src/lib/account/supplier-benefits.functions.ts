@@ -2,7 +2,7 @@ import {createServerFn} from '@tanstack/react-start';
 import {requireSupabaseAuth} from '@/integrations/supabase/auth-middleware';
 import {benefitSchema} from './supplier-benefits';
 export const redeemSupplierBenefit=createServerFn({method:'POST'}).middleware([requireSupabaseAuth]).inputValidator(benefitSchema).handler(async({data,context})=>{
- const r=await context.supabase.rpc('supplier_reward_redeem',{kind_value:data.kind,product:data.productId??null,request_id:data.requestId});
+ const r=await context.supabase.rpc('supplier_reward_redeem',{kind_value:data.kind,product:data.productId,request_id:data.requestId});
  if(r.error)throw new Error('Benefit not available');return r.data;
 });
 export const supplierAnalytics=createServerFn({method:'GET'}).middleware([requireSupabaseAuth]).handler(async({context})=>{

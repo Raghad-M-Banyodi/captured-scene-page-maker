@@ -1,0 +1,1 @@
+DO $$ DECLARE d text; BEGIN SELECT pg_get_functiondef('public.supplier_reward_redeem(text,uuid,uuid)'::regprocedure) INTO d; d:=replace(d,'kind_value text, product uuid, request_id uuid','kind_value text, product uuid DEFAULT NULL, request_id uuid DEFAULT NULL'); EXECUTE d; END $$;
