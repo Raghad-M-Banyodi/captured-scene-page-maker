@@ -155,6 +155,13 @@
       "when": 1793783899695,
       "tag": "0021_add_recycling_role_and_materials",
       "breakpoints": true
+    },
+    {
+      "idx": 22,
+      "version": "7",
+      "when": 1793783912987,
+      "tag": "0022_recycling_company_signup",
+      "breakpoints": true
     }
   ]
 }
