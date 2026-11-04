@@ -39,7 +39,7 @@ export function Recycling({partnerMode=false,initial='pickups'}:{partnerMode?:bo
  {admin&&['submitted','collected'].includes(r.status)&&<Button variant="outline" disabled={busy} onClick={()=>void perform({action:'reject',payload:{id:r.id}})}>{s.reject}</Button>}</article>;}
  if(!uid)return <div className="space-y-8"><p>{s.signin}</p><Button asChild><Link to="/login">{t.nav.login}</Link></Button><RecyclingBoard/></div>;
  if(q.isPending)return <p role="status">{t.account.loading}</p>;if(q.error||!d)return <p role="alert">{s.error}</p>;
- if(partnerMode&&!partner?.approved)return <p>{t.account.forbidden}</p>;
+ if(partnerMode&&!partner?.approved)return <p role="status" className="rounded-lg bg-secondary p-5 text-secondary-foreground">{partner?s.partnerPending:t.account.forbidden}</p>;
  const tabs=admin?['pickups','admin','rewards','leaderboard']:partnerMode?['pickups','leaderboard']:['pickups','rewards','leaderboard'];
  return <div className="space-y-8"><nav className="flex gap-2 overflow-x-auto">{tabs.map(key=><Button className="shrink-0" key={key} variant={tab===key?'secondary':'ghost'} onClick={()=>setTab(key)}>{s[key as 'pickups'|'admin'|'rewards'|'leaderboard']}</Button>)}</nav>
  {tab==='leaderboard'&&<RecyclingBoard/>}
