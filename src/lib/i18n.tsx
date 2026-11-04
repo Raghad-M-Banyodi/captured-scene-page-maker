@@ -76,7 +76,7 @@ const dict = {
     },
     auth: {
       loginTitle: "Welcome back", loginText: "Log in to manage orders and track your impact.", email: "Work email", password: "Password", loginBtn: "Log in", noAccount: "New to GreenSwitch?", haveAccount: "Already have an account?",
-      signupTitle: "Create your account", signupText: "Choose how you'll use GreenSwitch.", buyer: "Business Buyer", buyerText: "Restaurants, cafés, shops & institutions", supplierRole: "Packaging Supplier", supplierText: "Manufacturers & distributors", business: "Business name", fullName: "Full name", signupBtn: "Create account",
+      signupTitle: "Create your account", signupText: "Choose how you'll use GreenSwitch.", buyer: "Business Buyer", buyerText: "Restaurants, cafés, shops & institutions", supplierRole: "Packaging Supplier", supplierText: "Manufacturers & distributors", recyclingRole: "Recycling Company", recyclingText: "Paper, cardboard & aluminum collectors", business: "Business name", fullName: "Full name", signupBtn: "Create account",
       notice: "Accounts are not active yet — sign-in will be connected in the next phase. Nothing you enter here is stored.",
     },
     soon: { back: "Back home", explore: "Explore marketplace" },
@@ -152,7 +152,7 @@ const dict = {
     },
     auth: {
       loginTitle: "مرحباً بعودتك", loginText: "سجّل الدخول لإدارة طلباتك وتتبع أثرك.", email: "البريد الإلكتروني للعمل", password: "كلمة المرور", loginBtn: "تسجيل الدخول", noAccount: "جديد على GreenSwitch؟", haveAccount: "لديك حساب؟",
-      signupTitle: "أنشئ حسابك", signupText: "اختر طريقة استخدامك لـ GreenSwitch.", buyer: "مشترٍ تجاري", buyerText: "مطاعم ومقاهٍ ومتاجر ومؤسسات", supplierRole: "مورد تغليف", supplierText: "مصنّعون وموزعون", business: "اسم العمل", fullName: "الاسم الكامل", signupBtn: "إنشاء الحساب",
+      signupTitle: "أنشئ حسابك", signupText: "اختر طريقة استخدامك لـ GreenSwitch.", buyer: "مشترٍ تجاري", buyerText: "مطاعم ومقاهٍ ومتاجر ومؤسسات", supplierRole: "مورد تغليف", supplierText: "مصنّعون وموزعون", recyclingRole: "شركة إعادة تدوير", recyclingText: "جامعو الورق والكرتون والألمنيوم", business: "اسم العمل", fullName: "الاسم الكامل", signupBtn: "إنشاء الحساب",
       notice: "الحسابات غير مفعّلة بعد — سيتم ربط تسجيل الدخول في المرحلة القادمة. لا يتم حفظ أي شيء تُدخله هنا.",
     },
     soon: { back: "العودة للرئيسية", explore: "استكشف السوق" },

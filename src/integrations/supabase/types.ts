@@ -994,6 +994,7 @@ export type Database = {
       }
       recycling_partners: {
         Row: {
+          accepted_materials: string[]
           approved: boolean
           company_name: string
           id: string
@@ -1001,6 +1002,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          accepted_materials?: string[]
           approved?: boolean
           company_name: string
           id?: string
@@ -1008,6 +1010,7 @@ export type Database = {
           user_id: string
         }
         Update: {
+          accepted_materials?: string[]
           approved?: boolean
           company_name?: string
           id?: string
@@ -1390,7 +1393,7 @@ export type Database = {
       }
     }
     Enums: {
-      app_role: "buyer" | "supplier" | "admin"
+      app_role: "buyer" | "supplier" | "admin" | "recycling"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1518,7 +1521,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["buyer", "supplier", "admin"],
+      app_role: ["buyer", "supplier", "admin", "recycling"],
     },
   },
 } as const
