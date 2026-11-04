@@ -169,6 +169,13 @@
       "when": 1793831314998,
       "tag": "0023_integrated_hackathon_workflows",
       "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "7",
+      "when": 1793831435921,
+      "tag": "0024_complete_workflow_guards",
+      "breakpoints": true
     }
   ]
 }

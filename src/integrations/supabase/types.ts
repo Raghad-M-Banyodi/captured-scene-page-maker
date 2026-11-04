@@ -1425,6 +1425,7 @@ export type Database = {
         Args: { decision: string; supplier: string }
         Returns: undefined
       }
+      approval_status: { Args: { uid: string }; Returns: string }
       change_order_status: {
         Args: { next_status: string; order_id: string }
         Returns: undefined
@@ -1481,6 +1482,7 @@ export type Database = {
         }
         Returns: string[]
       }
+      resubmit_account: { Args: never; Returns: undefined }
       resubmit_supplier: { Args: never; Returns: undefined }
       supplier_reward_redeem: {
         Args: { kind_value: string; product: string; request_id: string }
