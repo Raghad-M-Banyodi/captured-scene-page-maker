@@ -1,8 +1,11 @@
 import {describe,it,expect} from 'vitest';
-import {costBreakdown,impactCalculation,recommendProducts,impactSchema,groupSavings,type AdvisorInput,type AdvisorProduct} from '@/lib/account/buyer-tools';
+import {costSchema,costBreakdown,impactCalculation,recommendProducts,impactSchema,groupSavings,type AdvisorInput,type AdvisorProduct} from '@/lib/account/buyer-tools';
 const product:AdvisorProduct={id:'11111111-1111-4111-8111-111111111111',price:0.65,moq:500,stock:10000,price_unit:'piece',pack_size:1,volume_discounts:[{min_quantity:1000,unit_price:0.6}],name_en:'Bagasse box',description_en:'Fibre packaging',category_slug:'containers',material:'bagasse',sizes:['750ml'],composition:'Sugarcane fibre',non_plastic:true,status:'published',is_demo:false};
 const input:AdvisorInput={businessType:'restaurant',packagedProduct:'Takeaway meal',temperature:'hot',foodUse:true,size:'750ml',monthlyQuantity:2000,currentPackaging:'Conventional plastic tub',currentPrice:0.5,budget:1500,priority:'balanced',category:'containers',lang:'en'};
 describe('Buyer tools',()=>{
+ it('requires a positive current plastic price for saved comparisons',()=>{expect(costSchema.safeParse({currentPrice:0,quantity:1000,productId:product.id}).success).toBe(false);expect(costSchema.safeParse({currentPrice:0.01,quantity:1000,productId:product.id}).success).toBe(true);});
+ it('automatically applies the real eligible volume tier',()=>{const r=costBreakdown(0.5,2000,product);expect(r.unitPrice).toBe(0.6);expect(r.alternativeAnnual).toBe(14400);expect(r.currentAnnual).toBe(12000);});
+ it('calculates effective price per piece for packs',()=>expect(costBreakdown(0.5,1000,{...product,price:45,moq:1,price_unit:'pack',pack_size:100,volume_discounts:[]}).effectivePiecePrice).toBe(0.45));
  it('calculates restaurant monthly and annual costs exactly',()=>{const r=costBreakdown(0.5,2000,product,1000);expect(r.currentMonthly).toBe(1000);expect(r.alternativeMonthly).toBe(1200);expect(r.monthlyDifference).toBe(200);expect(r.annualDifference).toBe(2400);expect(r.percentageChange).toBe(20);});
  it('rounds cafe packs and respects minimum quantity',()=>{const r=costBreakdown(0.48,1001,{...product,price:45,moq:10,price_unit:'pack',pack_size:100},0);expect(r.purchaseQuantity).toBe(11);expect(r.suppliedPieces).toBe(1100);expect(r.alternativeMonthly).toBe(495);expect(r.currentMonthly).toBe(480.48);});
  it('rejects a wholesale tier below its threshold',()=>expect(()=>costBreakdown(0.5,500,product,1000)).toThrow('Tier not eligible'));

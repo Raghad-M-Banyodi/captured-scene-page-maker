@@ -162,6 +162,27 @@
       "when": 1793783912987,
       "tag": "0022_recycling_company_signup",
       "breakpoints": true
+    },
+    {
+      "idx": 23,
+      "version": "7",
+      "when": 1793831314998,
+      "tag": "0023_integrated_hackathon_workflows",
+      "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "7",
+      "when": 1793831435921,
+      "tag": "0024_complete_workflow_guards",
+      "breakpoints": true
+    },
+    {
+      "idx": 25,
+      "version": "7",
+      "when": 1793831519881,
+      "tag": "0025_optional_analytics_product_parameter",
+      "breakpoints": true
     }
   ]
 }

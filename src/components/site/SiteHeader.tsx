@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Globe, Menu } from "lucide-react";
+import { Globe, Menu, ShoppingCart } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
@@ -7,12 +7,13 @@ import { useI18n } from "@/lib/i18n";
 import { useAccount } from "@/lib/account/session";
 import { dashboardPath } from "@/lib/account/rules";
 import { supabase } from "@/integrations/supabase/client";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQueryClient, useQuery } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { Logo } from "./Logo";
 
 export function useNavItems() {
   const { t } = useI18n();
+  const account=useAccount();
   return [
     { to: "/", label: t.nav.home },
     { to: "/marketplace", label: t.nav.marketplace },
@@ -36,10 +37,12 @@ export function SiteHeader() {
   const { t, dir } = useI18n();
   const account = useAccount();
   const queryClient = useQueryClient();
+  const cart=useQuery({queryKey:["cart",account.user?.id],enabled:!!account.user&&account.roles.includes("buyer"),queryFn:async()=>{const r=await supabase.from("cart_items").select("id,quantity");if(r.error)throw r.error;return r.data;}});
+  const cartLink=account.roles.includes("buyer")?<Button variant="ghost" size="icon" asChild><Link to="/cart" aria-label={`${t.account.cart} (${cart.data?.length??0})`} className="relative"><ShoppingCart/><span className="absolute -top-1 -end-1 text-xs font-bold bg-primary text-primary-foreground rounded-full min-w-4 text-center">{cart.data?.length??0}</span></Link></Button>:null;
   const navigate = useNavigate();
   async function logout() { await queryClient.cancelQueries(); queryClient.clear(); await supabase.auth.signOut(); await navigate({to:"/auth",replace:true}); setOpen(false); }
   const accountLinks = account.user ? <><Button variant="ghost" asChild><Link to={dashboardPath(account.roles)} onClick={()=>setOpen(false)}>{t.account.dashboard}</Link></Button><Button variant="outline" onClick={()=>void logout()}>{t.account.logout}</Button></> : <><Button variant="ghost" asChild><Link to="/login" onClick={()=>setOpen(false)}>{t.nav.login}</Link></Button><Button asChild><Link to="/signup" onClick={()=>setOpen(false)}>{t.nav.signup}</Link></Button></>;
-  const items = useNavItems();
+  const items = useNavItems().filter(i=>!(account.roles.includes("supplier")&&!account.roles.includes("buyer")&&i.to==="/impact"));
   const [open, setOpen] = useState(false);
 
   return (
@@ -60,10 +63,10 @@ export function SiteHeader() {
         </nav>
         <div className="hidden items-center gap-2 lg:flex">
           <LangSwitch />
-          {accountLinks}
+          {cartLink}{accountLinks}
         </div>
         <div className="flex items-center gap-1 lg:hidden">
-          <LangSwitch />
+          <LangSwitch />{cartLink}
           <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger asChild>
               <Button variant="ghost" size="icon" aria-label={t.nav.menu}><Menu /></Button>
