@@ -1,4 +1,8 @@
 # GreenSwitch account phase
+- [ ] Hackathon: supplier recycling, atomic featured/analytics rewards and supplier impact
+- [ ] Hackathon: persistent approval tabs, rejection reasons and resubmission
+- [ ] Hackathon: explicit campaign confirmation, voucher funding and cart integration
+- [ ] Hackathon: live leaderboard details, strict cost comparisons and integration tests
 - [x] Final focused QA: 47 regressions, 60 public browser states, fully migrated isolated journey and admin tests, security review, four critical approval/retry/permission fixes and FINAL-QA.md
 - [ ] Operational publication verification — blocked by zero hosted accounts/products, no designated administrator, actual email/private uploads and final privacy/terms
 - [x] Extend existing admin shell with real metrics, management modules, analytics and settings
