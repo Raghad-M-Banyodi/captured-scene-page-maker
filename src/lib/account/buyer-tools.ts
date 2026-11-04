@@ -3,7 +3,7 @@ import Decimal from 'decimal.js';
 import { parseDiscounts } from './commerce';
 export const advisorSchema=z.object({businessType:z.string().trim().min(1).max(100),packagedProduct:z.string().trim().min(1).max(150),temperature:z.enum(['hot','cold']),foodUse:z.boolean(),size:z.string().trim().min(1).max(100),monthlyQuantity:z.coerce.number().int().positive().max(1000000),currentPackaging:z.string().trim().min(1).max(150),currentPrice:z.coerce.number().nonnegative().max(999999).multipleOf(0.01),budget:z.coerce.number().nonnegative().max(999999999).multipleOf(0.01),priority:z.enum(['cost','durability','sustainability','balanced']),category:z.string().max(80),lang:z.enum(['en','ar']).default('en')});
 export type AdvisorInput=z.infer<typeof advisorSchema>;
-export const costSchema=z.object({currentPrice:z.coerce.number().nonnegative().max(999999).multipleOf(0.01),quantity:z.coerce.number().int().positive().max(1000000),productId:z.string().uuid(),tierQuantity:z.coerce.number().int().nonnegative().max(1000000).default(0)});
+export const costSchema=z.object({currentPrice:z.coerce.number().positive().max(999999).multipleOf(0.01),quantity:z.coerce.number().int().positive().max(1000000),productId:z.string().uuid(),tierQuantity:z.coerce.number().int().nonnegative().max(1000000).default(0)});
 export const impactSchema=z.object({productId:z.string().uuid(),baselineGrams:z.coerce.number().positive().max(100000).multipleOf(0.001),quantity:z.coerce.number().int().positive().max(1000000),month:z.string().regex(/^\d{4}-(0[1-9]|1[0-2])$/),orderId:z.string().uuid().optional()});
 export type PricingProduct={id:string;price:number;moq:number;stock:number;price_unit:string;pack_size:number;volume_discounts:unknown};
 export function costBreakdown(currentPrice:number,quantity:number,product:PricingProduct,tierQuantity=0){
@@ -11,9 +11,10 @@ export function costBreakdown(currentPrice:number,quantity:number,product:Pricin
  const purchaseQuantity=Math.max(product.moq,Math.ceil(quantity/packSize));
  const tiers=parseDiscounts(product.volume_discounts);const tier=tierQuantity?tiers.find(t=>t.min_quantity===tierQuantity):undefined;
  if(tierQuantity&&(!tier||purchaseQuantity<tier.min_quantity))throw new Error('Tier not eligible');
- const price=tier?.unit_price??product.price;
+ const eligible=tiers.filter(t=>t.min_quantity<=purchaseQuantity).sort((a,b)=>b.min_quantity-a.min_quantity);
+ const price=eligible[0]?.unit_price??product.price;
  const current=new Decimal(currentPrice).times(quantity);const alternative=new Decimal(price).times(purchaseQuantity);const difference=alternative.minus(current);
- return {currentMonthly:current.toNumber(),alternativeMonthly:alternative.toNumber(),monthlyDifference:difference.toNumber(),annualDifference:difference.times(12).toNumber(),percentageChange:current.isZero()?null:difference.div(current).times(100).toDecimalPlaces(4).toNumber(),purchaseQuantity,suppliedPieces:purchaseQuantity*packSize,unitPrice:price,packSize,available:purchaseQuantity<=product.stock};
+ return {currentAnnual:current.times(12).toNumber(),alternativeAnnual:alternative.times(12).toNumber(),effectivePiecePrice:new Decimal(price).div(packSize).toNumber(),currentMonthly:current.toNumber(),alternativeMonthly:alternative.toNumber(),monthlyDifference:difference.toNumber(),annualDifference:difference.times(12).toNumber(),percentageChange:current.isZero()?null:difference.div(current).times(100).toDecimalPlaces(4).toNumber(),purchaseQuantity,suppliedPieces:purchaseQuantity*packSize,unitPrice:price,packSize,available:purchaseQuantity<=product.stock};
 }
 export function impactCalculation(grams:number,quantity:number){const kg=new Decimal(grams).times(quantity).div(1000);return {units:quantity,kg:kg.toNumber(),annualKg:kg.times(12).toNumber(),annualUnits:quantity*12};}
 export function groupSavings(alternative:number,groupPrice:number,purchaseQuantity:number){return Decimal.max(0,new Decimal(alternative).minus(new Decimal(groupPrice).times(purchaseQuantity))).toNumber();}
